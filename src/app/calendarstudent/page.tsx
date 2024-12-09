@@ -33,7 +33,7 @@ const CalendarTeacherPage = () => {
         <Popover>
           <PopoverTrigger asChild>
             <Button className="calendar-button">
-              {selectedDate ? selectedDate.toLocaleDateString('en-GB', {
+              {selectedDate ? selectedDate.toLocaleDateString('ro-RO', {
                 weekday: 'long',
                 year: 'numeric',
                 month: 'numeric',
@@ -51,7 +51,7 @@ const CalendarTeacherPage = () => {
         {selectedDate && (
           <div className="calendar-actions">
             <p className="calendar-selected-date">
-              Selected Date: {selectedDate.toLocaleDateString('en-GB', {
+              Selected Date: {selectedDate.toLocaleDateString('ro-RO', {
                 weekday: 'long',
                 year: 'numeric',
                 month: 'numeric',
