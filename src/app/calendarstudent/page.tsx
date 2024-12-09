@@ -33,7 +33,11 @@ const CalendarTeacherPage = () => {
         <Popover>
           <PopoverTrigger asChild>
             <Button className="calendar-button">
-              {selectedDate ? selectedDate.toLocaleDateString() : "Select a Date"}
+              {selectedDate ? selectedDate.toLocaleDateString('en-GB', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'numeric',
+                day: 'numeric' }) : "Select a Date"}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="calendar-popover-content">
@@ -47,7 +51,11 @@ const CalendarTeacherPage = () => {
         {selectedDate && (
           <div className="calendar-actions">
             <p className="calendar-selected-date">
-              Selected Date: {selectedDate.toLocaleDateString()}
+              Selected Date: {selectedDate.toLocaleDateString('en-GB', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'numeric',
+                day: 'numeric' })}
             </p>
             <Button className="calendar-button" onClick={handleScheduleExam}>
               Schedule Exam
