@@ -95,7 +95,7 @@ export default function LoginPage() {
               <img src="/user.png" alt="User Icon" className="icon" />
               <input
                 type="text"
-                name="username"
+                name="email"
                 placeholder="Email"
                 value={formData.email}
                 onChange={handleChange}
