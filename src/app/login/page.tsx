@@ -1,64 +1,63 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation'; // Importare hook pentru navigare
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation'; 
 import './login.css';
+import { login } from '@/app/services/loginService';
 
 export default function LoginPage() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [formData, setFormData] = useState({
-    username: '',
+    email: '',
     password: '',
   });
 
   const handleNavigation = (path: string) => {
     router.push(path);
   };
+
   // Funcție pentru a afișa/ascunde parola
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
   };
 
   // Funcție de gestionare a trimiterii formularului
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError('');
 
-    const { username, password } = formData;
+    const { email, password } = formData;
 
     // Validare câmpuri
-    if (!username || !password) {
+    if (!email || !password) {
       setError('Toate câmpurile sunt obligatorii.');
       return;
     }
 
-    // Validare parolă (exemplu)
-    if (password !== 'password1234') {
-      setError('Parola este incorectă.');
-      return;
-    }
+    try {
+      const { user_type } = await login(email, password);
 
-    // Validare email și redirecționare
-    if (username.endsWith('@usv.ro')) {
-      if (username.startsWith('student')) {
-        document.cookie = 'isLoggedIn=true; path=/;';
-        document.cookie = 'userRole=student; path=/;';
-        handleNavigation('/dashboardstudent'); // Navigare cu router.push
-      } else if (username.startsWith('profesor')) {
-        document.cookie = 'isLoggedIn=true; path=/;';
-        document.cookie = 'userRole=profesor; path=/;';
-        handleNavigation('/dashboardteacher'); // Navigare cu router.push
+      // Setarea cookie-urilor pe baza rolului primit din backend
+      document.cookie = 'isLoggedIn=true; path=/;';
+      document.cookie = `userRole=${user_type}; path=/;`;
+
+      // Redirecționare în funcție de rol
+      if (user_type === 'student') {
+        handleNavigation('/dashboardstudent');
+      } else if (user_type === 'profesor') {
+        handleNavigation('/dashboardteacher');
       } else {
-        setError('Email invalid. Format permis: student@usv.ro sau profesor@usv.ro.');
+        setError('Rol necunoscut. Contactați administratorul.');
       }
-    } else {
-      setError('Email invalid. Format permis: student@usv.ro sau profesor@usv.ro.');
+    } catch (err: any) {
+      setError(err.message || 'Eroare la conectarea cu serverul.');
     }
   };
 
   // Verificare autentificare pe încărcarea paginii
-  useEffect(() => {
+  /*useEffect(() => {
     const checkAuthStatus = () => {
       const isLoggedIn = document.cookie.includes('isLoggedIn=true');
       const userRole = document.cookie.split('; ').find((row) => row.startsWith('userRole='));
@@ -74,7 +73,7 @@ export default function LoginPage() {
     };
 
     checkAuthStatus();
-  }, [router]);
+  }, [router]);*/
 
   // Gestionare schimbare în câmpurile de text
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -98,7 +97,7 @@ export default function LoginPage() {
                 type="text"
                 name="username"
                 placeholder="Email"
-                value={formData.username}
+                value={formData.email}
                 onChange={handleChange}
               />
             </div>

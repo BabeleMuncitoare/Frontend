@@ -1,0 +1,9 @@
+In acest folder vor fi create toate cererile si logica de 
+comunicare cu baza de date.
+
+Pentru fiecare pagina care necesita o cerere catre baza de date 
+se va crea un fisier specific in care se vor scrie functiile
+necesare.
+
+Exemplu: pentru  pagina de logare a fost creat un fisier loginService.ts 
+in care sunt functii care sunt necesare doar paginii de logare.
