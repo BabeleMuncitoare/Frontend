@@ -115,11 +115,13 @@ export default function LoginPage() {
         </form>
       </div>
       <div className="illustration">
-        <div className="illustration-logo">
-          <img src="/logo.png" alt="USV Logo" className="logo" />
-        </div>
         <div className="illustration-background">
-          <img src="/illustration.png" alt="Illustration" className="illustration-image" />
+          <div className="illustration-logo">
+            <img src="/logo.png" alt="USV Logo" className="logo" />
+          </div>
+          <div className="illustration-mini">
+            <img src="/illustration.png" alt="Illustration" className="illustration-image" />
+          </div>
         </div>
       </div>
     </div>

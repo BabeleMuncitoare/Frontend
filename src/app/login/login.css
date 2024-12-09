@@ -121,9 +121,7 @@ body {
 
 .illustration-logo {
   position: absolute;
-  top: 10%;
-  width: 100px;
-  margin-top: 15px;
+  top: 12%; 
 }
 
 .illustration-background {
