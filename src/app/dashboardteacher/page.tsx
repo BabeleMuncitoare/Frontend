@@ -14,7 +14,9 @@ const DashboardTeacher = () => {
   useEffect(() => {
     const checkAuthStatus = () => {
       const isLoggedIn = document.cookie.includes('isLoggedIn=true');
-      const userRole = document.cookie.split('; ').find((row) => row.startsWith('userRole=profesor'));
+      const userRole = document.cookie
+      .split('; ')
+      .find((row) => row.startsWith('userRole=professor'));
 
       if (!isLoggedIn || !userRole) {
         router.push('/'); // Navigare corectă cu router.push
