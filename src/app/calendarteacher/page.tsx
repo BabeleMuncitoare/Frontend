@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
@@ -9,7 +9,7 @@ import './calendarteacher.css';
 
 const CalendarTeacherPage = () => {
   const router = useRouter();
-  const [selectedDate, setDate] = useState<Date | undefined>(new Date());
+  const [selectedDate, setDate] = useState<Date | undefined>(undefined);
 
   const handleScheduleExam = () => {
     if (selectedDate) {
@@ -17,6 +17,11 @@ const CalendarTeacherPage = () => {
       router.push(`/schedule-exam?date=${selectedDate.toISOString()}`);
     }
   };
+
+
+  useEffect(() => {
+    setDate(new Date()); 
+  }, []);
 
   return (
     <div className="dashboard-container">
