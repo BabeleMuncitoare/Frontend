@@ -1,12 +1,13 @@
 'use client';
 
-import Image from 'next/image';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import './dashboardstudent.css';
 
 const DashboardStudent = () => {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true); // Pentru afișarea stării de încărcare
+  const [error, setError] = useState('');
 
   const handleNavigation = (path: string) => {
     router.push(path);
@@ -14,11 +15,21 @@ const DashboardStudent = () => {
 
   useEffect(() => {
     const checkAuthStatus = () => {
+      // Verifică autentificarea și rolul utilizatorului
       const isLoggedIn = document.cookie.includes('isLoggedIn=true');
-      const userRole = document.cookie.split('; ').find((row) => row.startsWith('userRole=student'));
+      const userRole = document.cookie
+        .split('; ')
+        .find((row) => row.startsWith('userRole='))
+        ?.split('=')[1]; // Extrage rolul utilizatorului din cookie
 
-      if (!isLoggedIn || !userRole) {
-        router.push('/'); // Navigare corectă
+      if (!isLoggedIn || userRole !== 'student') {
+        setError('Acces neautorizat. Veți fi redirecționat.');
+        setTimeout(() => {
+          router.push('/'); // Redirecționează la pagina principală după 2 secunde
+        }, 2000);
+      } else {
+        setError(''); // Resetează erorile
+        setIsLoading(false); // Termină starea de încărcare
       }
     };
 
@@ -26,17 +37,25 @@ const DashboardStudent = () => {
   }, [router]);
 
   const handleLogout = () => {
+    // Șterge cookie-urile pentru autentificare
     document.cookie = 'isLoggedIn=; Max-Age=0; path=/;';
     document.cookie = 'userRole=; Max-Age=0; path=/;';
     router.push('/'); // Navigare la pagina principală
-
   };
+
+  if (isLoading) {
+    return <div>Se încarcă...</div>; // Afișează un mesaj de încărcare
+  }
+
+  if (error) {
+    return <div>{error}</div>; // Afișează un mesaj de eroare dacă accesul este neautorizat
+  }
 
   return (
     <div className="dashboard-container">
       {/* Sidebar Section */}
-      <div className="sidebar"> 
-      <div onClick={() => handleNavigation('/dashboardstudent')} style={{ cursor: 'pointer' }}>
+      <div className="sidebar">
+        <div onClick={() => handleNavigation('/dashboardstudent')} style={{ cursor: 'pointer' }}>
           <img src="/logo.png" alt="USV Logo" className="logo" />
         </div>
         <ul>

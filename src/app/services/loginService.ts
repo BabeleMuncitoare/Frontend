@@ -1,10 +1,10 @@
-const API_URL = 'http://localhost:3000';
+const API_URL = 'http://127.0.0.1:8000/api/login/';
 
-export async function login(email: string, password: string) {
-  const response = await fetch(`${API_URL}/login`, {
+export async function login(username: string, password: string) {
+  const response = await fetch(`${API_URL}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({ username, password }),
   });
 
   if (!response.ok) {
@@ -12,5 +12,6 @@ export async function login(email: string, password: string) {
     throw new Error(errorData.error || 'A apărut o eroare.');
   }
 
-  return response.json();
+  // Returnează răspunsul JSON complet
+  return await response.json();
 }

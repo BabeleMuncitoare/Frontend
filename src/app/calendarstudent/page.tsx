@@ -14,7 +14,7 @@ const CalendarTeacherPage = () => {
   const handleScheduleExam = () => {
     if (selectedDate) {
       console.log('Scheduling exam on:', selectedDate);
-      router.push(`/schedule-exam?date=${selectedDate.toISOString()}`);
+      /*router.push(`/schedule-exam?date=${selectedDate.toISOString()}`);*/
     }
   };
 
@@ -29,7 +29,7 @@ const CalendarTeacherPage = () => {
 
       {/* Main Content Section */}
       <div className="content">
-        <h1 className="calendar-title">Select a Date for Exam Scheduling</h1>
+        <h1 className="calendar-title">Selectați o dată pentru examen:</h1>
         <Popover>
           <PopoverTrigger asChild>
             <Button className="calendar-button">
@@ -51,14 +51,14 @@ const CalendarTeacherPage = () => {
         {selectedDate && (
           <div className="calendar-actions">
             <p className="calendar-selected-date">
-              Selected Date: {selectedDate.toLocaleDateString('ro-RO', {
+              Data selectată: {selectedDate.toLocaleDateString('ro-RO', {
                 weekday: 'long',
                 year: 'numeric',
                 month: 'numeric',
                 day: 'numeric' })}
             </p>
             <Button className="calendar-button" onClick={handleScheduleExam}>
-              Schedule Exam
+              Programează
             </Button>
           </div>
         )}
