@@ -9,13 +9,13 @@ function ExamFetcher() {
   const router = useRouter();
   const [data, setData] = useState([]); // Starea pentru date
   const [loading, setLoading] = useState(false); // Indicatorul de încărcare
-  const [error, setError] = useState(null); // Starea pentru erori
+  const [error, setError] = useState(""); // Starea pentru erori
   const [searchTerm, setSearchTerm] = useState(""); // Termenul de căutare
 
   // Funcție pentru preluarea examenelor din API
   const fetchExams = async () => {
     setLoading(true); // Activează indicatorul de încărcare
-    setError(null); // Resetează eroarea
+    setError(""); // Resetează eroarea
 
     try {
       const response = await axios.get(`http://127.0.0.1:8000/api/examen/?query=${searchTerm}`);
@@ -50,7 +50,7 @@ function ExamFetcher() {
   };
 
   // Funcția pentru apăsarea tastei Enter în bara de căutare
-  const handleKeyDown = (event) => {
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       fetchExams(); // Reia cererea cu termenul de căutare
     }

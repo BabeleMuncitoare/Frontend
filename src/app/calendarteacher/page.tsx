@@ -9,7 +9,7 @@ import './calendarteacher.css';
 
 const CalendarTeacherPage = () => {
   const router = useRouter();
-  const [selectedDate, setDate] = useState<Date | undefined>(undefined);
+  const [selectedDate, setDate] = useState<Date | undefined>(new Date());
 
   const handleScheduleExam = () => {
     if (selectedDate) {
@@ -17,12 +17,7 @@ const CalendarTeacherPage = () => {
       router.push(`/schedule-exam?date=${selectedDate.toISOString()}`);
     }
   };
-
-
-  useEffect(() => {
-    setDate(new Date()); 
-  }, []);
-
+  
   return (
     <div className="dashboard-container">
       {/* Sidebar Section */}
