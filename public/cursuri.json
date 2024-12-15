@@ -1,0 +1,13 @@
+{
+  "courses": [
+    { "name": "Curs 1", "professor": "Prof. Ion Popescu", "status": "Respins", "examDate": null },
+    { "name": "Curs 2", "professor": "Prof. Maria Ionescu", "status": "Acceptat", "examDate": "2025-01-15" },
+    { "name": "Curs 3", "professor": "Prof. Alexandru Vasile", "status": "Asteptare", "examDate": null },
+    { "name": "Curs 4", "professor": "Prof. Alexandru Vasile", "status": "Respins", "examDate": null },
+    { "name": "Curs 5", "professor": "Prof. Alexandru Vasile", "status": "Respins", "examDate": null },
+    { "name": "Curs 6", "professor": "Prof. Alexandru Vasile", "status": "Acceptat", "examDate": "2025-01-20" },
+    { "name": "Curs 7", "professor": "Prof. Alexandru Vasile", "status": "Acceptat", "examDate": "2025-01-25" },
+    { "name": "Curs 8", "professor": "Prof. Alexandru Vasile", "status": "Asteptare", "examDate": null },
+    { "name": "Curs 9", "professor": "Prof. Alexandru Vasile", "status": "Asteptare", "examDate": null }
+  ]
+}

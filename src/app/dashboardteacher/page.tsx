@@ -14,7 +14,9 @@ const DashboardTeacher = () => {
   useEffect(() => {
     const checkAuthStatus = () => {
       const isLoggedIn = document.cookie.includes('isLoggedIn=true');
-      const userRole = document.cookie.split('; ').find((row) => row.startsWith('userRole=profesor'));
+      const userRole = document.cookie
+      .split('; ')
+      .find((row) => row.startsWith('userRole=professor'));
 
       if (!isLoggedIn || !userRole) {
         router.push('/'); // Navigare corectă cu router.push
@@ -42,7 +44,7 @@ const DashboardTeacher = () => {
           <li>
             <div
               className="menu-icon-container"
-              onClick={() => handleNavigation('/calendar')} // Navigare corectă
+              onClick={() => handleNavigation('/calendarteacher')} // Navigare corectă
               style={{ cursor: 'pointer' }}
             >
               <img src="/calendar.png" alt="Calendar" className="menu-icon" />

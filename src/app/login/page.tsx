@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation'; // Importare hook pentru navigare
+import { useRouter } from 'next/navigation';
 import './login.css';
+import { login } from '@/app/services/loginService';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -16,67 +17,9 @@ export default function LoginPage() {
   const handleNavigation = (path: string) => {
     router.push(path);
   };
-  // Funcție pentru a afișa/ascunde parola
-  const togglePasswordVisibility = () => {
-    setShowPassword((prev) => !prev);
-  };
 
-  // Funcție de gestionare a trimiterii formularului
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
 
-    const { username, password } = formData;
-
-    // Validare câmpuri
-    if (!username || !password) {
-      setError('Toate câmpurile sunt obligatorii.');
-      return;
-    }
-
-    // Validare parolă (exemplu)
-    if (password !== 'password1234') {
-      setError('Parola este incorectă.');
-      return;
-    }
-
-    // Validare email și redirecționare
-    if (username.endsWith('@usv.ro')) {
-      if (username.startsWith('student')) {
-        document.cookie = 'isLoggedIn=true; path=/;';
-        document.cookie = 'userRole=student; path=/;';
-        handleNavigation('/dashboardstudent'); // Navigare cu router.push
-      } else if (username.startsWith('profesor')) {
-        document.cookie = 'isLoggedIn=true; path=/;';
-        document.cookie = 'userRole=profesor; path=/;';
-        handleNavigation('/dashboardteacher'); // Navigare cu router.push
-      } else {
-        setError('Email invalid. Format permis: student@usv.ro sau profesor@usv.ro.');
-      }
-    } else {
-      setError('Email invalid. Format permis: student@usv.ro sau profesor@usv.ro.');
-    }
-  };
-
-  // Verificare autentificare pe încărcarea paginii
-  useEffect(() => {
-    const checkAuthStatus = () => {
-      const isLoggedIn = document.cookie.includes('isLoggedIn=true');
-      const userRole = document.cookie.split('; ').find((row) => row.startsWith('userRole='));
-
-      if (isLoggedIn && userRole) {
-        const role = userRole.split('=')[1];
-        if (role === 'student') {
-          handleNavigation('/dashboardstudent'); // Navigare cu router.push
-        } else if (role === 'profesor') {
-          handleNavigation('/dashboardteacher'); // Navigare cu router.push
-        }
-      }
-    };
-
-    checkAuthStatus();
-  }, [router]);
-
-  // Gestionare schimbare în câmpurile de text
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -85,13 +28,58 @@ export default function LoginPage() {
     }));
   };
 
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault(); // Previne comportamentul implicit al formularului
+    setError(''); // Resetează eroarea anterioară
+  
+    const { username, password } = formData;
+  
+    if (!username || !password) {
+      setError('Toate câmpurile sunt obligatorii.');
+      return;
+    }
+  
+    try {
+      // Trimite cererea de autentificare la backend
+      const response = await login(username, password);
+  
+      // Loghează răspunsul primit
+      console.log('Răspunsul backend-ului:', response);
+  
+      // Extrage user_type din răspuns
+      const { user } = response;
+  
+      if (!user || !user.user_type) {
+        throw new Error('Răspunsul backend-ului este invalid.');
+      }
+  
+      // Salvează rolul utilizatorului în cookies
+      document.cookie = 'isLoggedIn=true; path=/;';
+      document.cookie = `userRole=${user.user_type}; path=/;`;
+  
+      // Redirecționează în funcție de user_type
+      if (user.user_type === 'student') {
+        handleNavigation('/dashboardstudent');
+      } else if (user.user_type === 'professor') {
+        handleNavigation('/dashboardteacher');
+      } else {
+        setError('Rol necunoscut. Contactați administratorul.');
+      }
+    } catch (err: any) {
+      // Loghează eroarea pentru debugging
+      console.error('Eroare la autentificare:', err);
+      setError(err.message || 'Eroare la conectarea cu serverul.');
+    }
+  };
+
+  
+
   return (
     <div className="login-container">
       <div className="login-form">
         <h2>Login Now</h2>
         <form className="form-primary" onSubmit={handleSubmit}>
           <div className="text-box-form">
-            {/* Input pentru email */}
             <div className="input-group">
               <img src="/user.png" alt="User Icon" className="icon" />
               <input
@@ -102,7 +90,6 @@ export default function LoginPage() {
                 onChange={handleChange}
               />
             </div>
-            {/* Input pentru parola */}
             <div className="input-group">
               <img src="/padlock.png" alt="Padlock Icon" className="icon" />
               <input
@@ -120,21 +107,18 @@ export default function LoginPage() {
                 style={{ cursor: 'pointer' }}
               />
             </div>
-            {/* Mesaj de eroare */}
             {error && <p className="error-message">{error}</p>}
           </div>
-          {/* Buton de conectare */}
           <div className="button-submit">
             <button type="submit">Login</button>
           </div>
         </form>
       </div>
-      {/* Ilustrație pentru partea dreaptă */}
       <div className="illustration">
-        <div className="illustration-logo">
-        <img src="/logo.png" alt="USV Logo" className="logo" />
-        </div>
         <div className="illustration-background">
+          <div className="illustration-logo">
+            <img src="/logo.png" alt="USV Logo" className="logo" />
+          </div>
           <div className="illustration-mini">
             <img src="/illustration.png" alt="Illustration" className="illustration-image" />
           </div>

@@ -13,7 +13,7 @@ const HomePage = () => {
     router.push(path);
   };
 
-  useEffect(() => {
+  /*useEffect(() => {
     const checkAuthStatus = () => {
       const isLoggedIn = document.cookie.includes('isLoggedIn=true');
       const userRole = document.cookie.split('; ').find((row) => row.startsWith('userRole='));
@@ -29,7 +29,7 @@ const HomePage = () => {
     };
 
     checkAuthStatus();
-  }, [router]);
+  }, [router]);*/
 
   return (
     <div className="dashboard-container">
@@ -105,7 +105,7 @@ const HomePage = () => {
           </ul>
         </div>
 
-        {/* Modal for Displaying Names */}
+        {/* Modal for Info */}
       {showModal && (
         <div className="modal-overlay">
           <div className="modal-content">
