@@ -18,12 +18,11 @@
   align-self: center;
 }
 
-/* Calendar Title */
-.calendar-title {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: var(--text-color);
-  margin: 16px;
+.content-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  width: 100%;
 }
 
 /* Popover Content */
@@ -43,6 +42,11 @@
 
 /* Calendar Actions */
 .calendar-actions {
+  margin-top: 16px;
+}
+
+.calendar-selected-date {
+  font-size: 1.125rem;
   margin-top: 16px;
 }
 
@@ -98,15 +102,11 @@
   background-color: rgb(196, 196, 50);
 }
 
-/* Selected Date */
-.calendar-selected-date {
-  font-size: 1.125rem;
-  margin-top: 16px;
-}
 
 /* Placeholder Content */
 .placeholder-content {
-  width: 50%;
+  flex: 1;
+  width: 49%;
   min-height: 60vh;
   background-color: var(--secondary-color);
   border-radius: 25px;
@@ -119,8 +119,67 @@
   margin-bottom: 20px;
 }
 
+.static-calendar {
+  flex: 0.25;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  min-height: 60vh;
+  color: black;
+  height: 10vh;
+}
+
+.custom-calendar {
+  --rdp-cell-size: 3rem; /* Adjust size of calendar cells */
+  --rdp-background-color: #f8f9fa;
+  --rdp-accent-color: #4a3fd6;
+  --rdp-accent-text-color: white;
+}
+
+.custom-calendar .rdp {
+  font-size: 1.5rem;  
+}
+
+.custom-calendar .rdp-caption_label {
+  font-size: 1.45rem; 
+  font-weight: bold;
+  color: #4a3fd6; 
+}
+
+.custom-calendar .rdp-day {
+  font-size: 1.4rem; 
+  padding: 0.5rem; 
+}
+
+.custom-calendar .rdp-day:hover {
+  background-color: #6a7ed8;
+  color: white;
+}
+
+.custom-calendar .rdp-day--highlighted {
+  background-color: #4a3fd6;
+  color: white;
+  border-radius: 50%;
+}
+
+.custom-calendar .rdp-day_selected {
+  background-color: #4a3fd6; /* Fundal pentru ziua selectată */
+  color: white; /* Culoarea textului pentru ziua selectată */
+}
+
+.custom-calendar .rdp-day_outside {
+  color: #ccc; /* Zilele care nu aparțin lunii curente */
+  font-size: 1.3rem;
+}
+
+.custom-calendar .rdp-weekday {
+  font-size: 1.5rem; /* Dimensiunea fontului pentru zilele săptămânii */
+  font-weight: bold;
+}
+
 .placeholder-content::-webkit-scrollbar {
-  width: 12px; /* Lățimea scrollbar-ului */
+  width: 12px; 
 }
 
 .placeholder-content::-webkit-scrollbar-track {
@@ -137,5 +196,109 @@
   background: var(--color-button);
 }
 
+.schedule-exam-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  width: 500px;
+  align-self: center;
+  background-color: var(--secondary-color);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
 
+.schedule-exam-button:hover {
+  background-color: var(--color-button);
+}
+
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+/* Modal Content */
+.modal-content {
+  background: var(--primary-color);
+  padding: 20px;
+  border-radius: 10px;
+  width: 400px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content h2 {
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+}
+
+.form-field {
+  margin-bottom: 15px;
+  color: black;
+}
+
+.form-field label {
+  display: block;
+  margin-bottom: 5px;
+  color: white;
+}
+
+.form-field input,
+.form-field select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.modal-actions button {
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  background-color: var(--secondary-color);
+}
+
+.modal-actions button:hover {
+  background-color: var(--color-button);
+}
+
+.calendar-button {
+  color: white;
+}
+
+.button-section {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.schedule-exam-button {
+  padding: 10px 20px;
+  background-color: var(--secondary-color);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.schedule-exam-button:hover {
+  background-color: var(--color-button);
+}
 
