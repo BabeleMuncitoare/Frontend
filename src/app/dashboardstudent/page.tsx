@@ -66,7 +66,7 @@ const DashboardStudent = () => {
           <li>
             <div
               className="menu-icon-container"
-              onClick={() => handleNavigation('/settings')} // Navigare corectă
+              onClick={() => handleNavigation('/settings')} // Navigare 
               style={{ cursor: 'pointer' }}
             >
               <img src="/settings.png" alt="Settings" className="menu-icon" />
