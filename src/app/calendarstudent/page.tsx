@@ -137,7 +137,13 @@ const CalendarStudentPage = () => {
           <div className="placeholder-content">
             {exams.length > 0 ? (
               exams.map((exam, index) => (
-                <div key={index} className="exam-card">
+                <div key={index} className="card-button"
+                onMouseEnter={() => {
+                  if (exam.date) {
+                    setHoveredDate(new Date(exam.date));
+                  }
+                }}
+                onMouseLeave={() => setHoveredDate(null)}>
                   <strong>{exam.subject}</strong>
                   <p>Data: {new Date(exam.date).toLocaleDateString()}</p>
                   <p>Locație: {exam.location}</p>
