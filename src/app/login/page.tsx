@@ -28,9 +28,15 @@ export default function LoginPage() {
     }));
   };
 
+  const setCookie = (name: string, value: string, days: number) => {
+    const expires = new Date();
+    expires.setDate(expires.getDate() + days);
+    document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;`;
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); // Previne comportamentul implicit al formularului
-    setError(''); // Resetează eroarea anterioară
+    e.preventDefault(); 
+    setError(''); 
   
     const { username, password } = formData;
   
@@ -43,19 +49,17 @@ export default function LoginPage() {
       // Trimite cererea de autentificare la backend
       const response = await login(username, password);
   
-      // Loghează răspunsul primit
-      console.log('Răspunsul backend-ului:', response);
-  
       // Extrage user_type din răspuns
-      const { user } = response;
-  
-      if (!user || !user.user_type) {
+      const { token, user } = response;
+      console.log('Răspunsul backend-ului:', response);
+      
+      if (!token || !user || !user.user_type) {
         throw new Error('Răspunsul backend-ului este invalid.');
       }
   
       // Salvează rolul utilizatorului în cookies
-      document.cookie = 'isLoggedIn=true; path=/;';
-      document.cookie = `userRole=${user.user_type}; path=/;`;
+      setCookie('authToken', token, 7);
+      setCookie('userRole', user.user_type, 7);
   
       // Redirecționează în funcție de user_type
       if (user.user_type === 'student') {

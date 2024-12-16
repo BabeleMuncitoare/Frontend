@@ -9,11 +9,15 @@ import "./calendarstudent.css";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
 
-interface Course {
-  name: string;
-  professor: string;
-  status: string;
-  examDate: string | null;
+import { fetchUserExams, scheduleExam } from "@/app/services/examsService";
+import { fetchClasses } from "@/app/services/classesService";
+
+interface Exam {
+  id: number;
+  subject: string;
+  date: string;
+  location: string;
+  class_assigned: number;
 }
 
 const CalendarStudentPage = () => {
@@ -21,14 +25,15 @@ const CalendarStudentPage = () => {
   const [calendarSelectedDate, setCalendarSelectedDate] = useState<Date | undefined>(new Date());
   const [highlightedDates, setHighlightedDates] = useState<Date[]>([]);
   const [hoveredDate, setHoveredDate] = useState<Date | null>(null);
-  const [courses, setCourses] = useState<Course[]>([]);
+  const [exams, setExams] = useState<Exam[]>([]);
+  const [classes, setClasses] = useState<{ id: number; name: string }[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({
-    courseName: "",
-    professorName: "",
+    subject: "",
     date: undefined as Date | undefined,
-    time: "",
-    room: "",
+    time: "", 
+    location: "",
+    class_assigned: "",
   });
 
   const capitalizeFirstLetter = (text: string) => {
@@ -43,37 +48,30 @@ const CalendarStudentPage = () => {
   };
 
   useEffect(() => {
-    const fetchCourses = async () => {
+    const loadExams = async () => {
       try {
-        const response = await fetch("/cursuri.json");
-        const data = await response.json();
-        setCourses(data.courses);
+        const examsData = await fetchUserExams();
+        setExams(examsData);
 
-        // Extract exam dates for accepted courses
-        const acceptedDates = data.courses
-          .filter((course: Course) => course.status === "Acceptat" && course.examDate)
-          .map((course: Course) => new Date(course.examDate!));
-        setHighlightedDates(acceptedDates);
+        const dates = examsData.map((exam: Exam) => new Date(exam.date));
+        setHighlightedDates(dates);
       } catch (error) {
-        console.error("Error fetching courses:", error);
+        console.error("Error fetching exams:", error);
       }
     };
 
-    fetchCourses();
-  }, []);
+    const loadClasses = async () => {
+      try {
+        const classesData = await fetchClasses();
+        setClasses(classesData);
+      } catch (error) {
+        console.error("Error fetching classes:", error);
+      }
+    };
 
-  const getStatusClass = (status: string) => {
-    switch (status.toLowerCase()) {
-      case "acceptat":
-        return "status-accepted";
-      case "respins":
-        return "status-rejected";
-      case "asteptare":
-        return "status-pending";
-      default:
-        return "";
-    }
-  };
+    loadExams();
+    loadClasses();
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -84,9 +82,29 @@ const CalendarStudentPage = () => {
     setFormData((prev) => ({ ...prev, date }));
   };
 
-  const handleSubmit = () => {
-    console.log("Scheduled exam:", formData);
-    setShowModal(false);
+  const handleSubmit = async () => {
+    if (formData.subject && formData.date && formData.time && formData.location && formData.class_assigned) {
+      try {
+        const combinedDateTime = new Date(
+          `${formData.date.toISOString().split("T")[0]}T${formData.time}`
+        ).toISOString();
+
+        await scheduleExam({
+          subject: formData.subject,
+          date: combinedDateTime,
+          location: formData.location,
+          class_assigned: parseInt(formData.class_assigned),
+        });
+
+        setShowModal(false);
+        alert("Examenul a fost programat!");
+      } catch (error) {
+        console.error("Error scheduling exam:", error);
+        alert("Eroare la programarea examenului.");
+      }
+    } else {
+      alert("Toate câmpurile sunt obligatorii.");
+    }
   };
 
   return (
@@ -108,24 +126,16 @@ const CalendarStudentPage = () => {
         {/* Placeholder Content and Static Calendar */}
         <div className="content-row">
           <div className="placeholder-content">
-            {courses.length > 0 ? (
-              courses.map((course, index) => (
-                <div
-                  key={index}
-                  className={`card-button ${getStatusClass(course.status)}`}
-                  onMouseEnter={() => {
-                    if (course.examDate) {
-                      setHoveredDate(new Date(course.examDate));
-                    }
-                  }}
-                  onMouseLeave={() => setHoveredDate(null)}
-                >
-                  <strong>{course.name}</strong>
-                  <p>{course.professor}</p>
+            {exams.length > 0 ? (
+              exams.map((exam, index) => (
+                <div key={index} className="exam-card">
+                  <strong>{exam.subject}</strong>
+                  <p>Data: {new Date(exam.date).toLocaleDateString()}</p>
+                  <p>Locație: {exam.location}</p>
                 </div>
               ))
             ) : (
-              <p>Nu există cursuri disponibile momentan.</p>
+              <p>Nu există examene disponibile momentan.</p>
             )}
           </div>
 
@@ -165,23 +175,30 @@ const CalendarStudentPage = () => {
           <div className="modal-content">
             <h2>Programează examen</h2>
             <div className="form-field">
-              <label>Denumire curs:</label>
+              <label>Materie:</label>
               <input
                 type="text"
-                name="courseName"
-                value={formData.courseName}
+                name="subject"
+                value={formData.subject}
                 onChange={handleInputChange}
               />
             </div>
             <div className="form-field">
-              <label>Nume Profesor:</label>
-              <input
-                type="text"
-                name="professorName"
-                value={formData.professorName}
+              <label>Grupa (ID-ul clasei):</label>
+                <select
+                name="class_assigned"
+                value={formData.class_assigned}
                 onChange={handleInputChange}
-              />
+  >
+                <option value="">Selectați grupa</option>
+                {classes.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+                ))}
+                </select>
             </div>
+
             <div className="form-field">
               <label>Data:</label>
               <Popover>
@@ -220,18 +237,13 @@ const CalendarStudentPage = () => {
               />
             </div>
             <div className="form-field">
-              <label>Sala:</label>
-              <select
-                name="room"
-                value={formData.room}
+              <label>Locație:</label>
+              <input
+                type="text"
+                name="location"
+                value={formData.location}
                 onChange={handleInputChange}
-              >
-                <option value="">Selectați sala</option>
-                <option value="Sala 1">Sala 1</option>
-                <option value="Sala 2">Sala 2</option>
-                <option value="Sala 3">Sala 3</option>
-                <option value="Alta">Alta</option>
-              </select>
+              />
             </div>
             <div className="modal-actions">
               <Button onClick={handleSubmit}>Salvează</Button>
