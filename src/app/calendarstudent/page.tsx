@@ -40,6 +40,14 @@ const CalendarStudentPage = () => {
     return text.charAt(0).toUpperCase() + text.slice(1);
   };
 
+  const formatDateToDatabase = (date: Date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Luna este indexată de la 0
+    const day = String(date.getDate()).padStart(2, "0");
+  
+    return `${year}-${month}-${day}`;
+  };
+
   const handleScheduleExam = () => {
     if (formData.date) {
       console.log("Scheduling exam on:", formData.date);
@@ -52,23 +60,23 @@ const CalendarStudentPage = () => {
       try {
         const examsData = await fetchUserExams();
         setExams(examsData);
-
+  
         const dates = examsData.map((exam: Exam) => new Date(exam.date));
         setHighlightedDates(dates);
       } catch (error) {
         console.error("Error fetching exams:", error);
       }
     };
-
+  
     const loadClasses = async () => {
       try {
-        const classesData = await fetchClasses();
-        setClasses(classesData);
+        const classesData = await fetchClasses(); // Preia grupele
+        setClasses(classesData); // Salvează grupele în starea locală
       } catch (error) {
         console.error("Error fetching classes:", error);
       }
     };
-
+  
     loadExams();
     loadClasses();
   }, []);
@@ -79,16 +87,17 @@ const CalendarStudentPage = () => {
   };
 
   const handleDateSelect = (date: Date) => {
+    console.log("Data selectată:", date);
     setFormData((prev) => ({ ...prev, date }));
   };
 
   const handleSubmit = async () => {
     if (formData.subject && formData.date && formData.time && formData.location && formData.class_assigned) {
       try {
-        const combinedDateTime = new Date(
-          `${formData.date.toISOString().split("T")[0]}T${formData.time}`
-        ).toISOString();
+        const formattedDate = formatDateToDatabase(formData.date);
 
+        const combinedDateTime = `${formattedDate}T${formData.time}:00Z`;
+        
         await scheduleExam({
           subject: formData.subject,
           date: combinedDateTime,
@@ -184,20 +193,20 @@ const CalendarStudentPage = () => {
               />
             </div>
             <div className="form-field">
-              <label>Grupa (ID-ul clasei):</label>
-                <select
-                name="class_assigned"
-                value={formData.class_assigned}
-                onChange={handleInputChange}
+  <label>Grupa:</label>
+  <select
+    name="class_assigned"
+    value={formData.class_assigned}
+    onChange={handleInputChange}
   >
-                <option value="">Selectați grupa</option>
-                {classes.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-                ))}
-                </select>
-            </div>
+    <option value="">Selectați grupa</option>
+    {classes.map((c) => (
+      <option key={c.id} value={c.id}>
+        {c.name}
+      </option>
+    ))}
+  </select>
+</div>
 
             <div className="form-field">
               <label>Data:</label>

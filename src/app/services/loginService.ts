@@ -1,4 +1,4 @@
-const API_URL = 'http://127.0.0.1:8000/api/login/';
+const API_URL = 'https://bigbaba.yirade.dev/api/login/';
 
 export async function login(username: string, password: string) {
   const response = await fetch(`${API_URL}`, {

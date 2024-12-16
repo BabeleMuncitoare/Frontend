@@ -50,16 +50,20 @@ export default function LoginPage() {
       const response = await login(username, password);
   
       // Extrage user_type din răspuns
-      const { token, user } = response;
+      const { refresh, access, user } = response;
       console.log('Răspunsul backend-ului:', response);
-      
-      if (!token || !user || !user.user_type) {
+
+      if (!refresh || !access || !user || !user.user_type) {
         throw new Error('Răspunsul backend-ului este invalid.');
       }
   
       // Salvează rolul utilizatorului în cookies
-      setCookie('authToken', token, 7);
-      setCookie('userRole', user.user_type, 7);
+      setCookie('refreshToken', refresh, 7); 
+      setCookie('accessToken', access, 1); 
+      setCookie('userId', user.id.toString(), 7);
+      setCookie('userEmail', user.email, 7);
+      setCookie('userType', user.user_type, 7);
+      setCookie('username', user.username, 7);
   
       // Redirecționează în funcție de user_type
       if (user.user_type === 'student') {

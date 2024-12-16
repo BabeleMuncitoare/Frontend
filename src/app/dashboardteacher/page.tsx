@@ -1,11 +1,21 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import './dashboardteacher.css';
 
+// Funcție pentru a extrage valoarea unui cookie
+const getCookie = (name: string): string | null => {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
+  return null;
+};
+
 const DashboardTeacher = () => {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState('');
 
   const handleNavigation = (path: string) => {
     router.push(path);
@@ -13,13 +23,16 @@ const DashboardTeacher = () => {
 
   useEffect(() => {
     const checkAuthStatus = () => {
-      const isLoggedIn = document.cookie.includes('isLoggedIn=true');
-      const userRole = document.cookie
-      .split('; ')
-      .find((row) => row.startsWith('userRole=professor'));
+      const authToken = getCookie('accessToken'); // Token-ul de acces
+      const userRole = getCookie('userType'); // Rolul utilizatorului
 
-      if (!isLoggedIn || !userRole) {
-        router.push('/'); // Navigare corectă cu router.push
+      if (!authToken || userRole !== 'professor') {
+        setError('Acces neautorizat. Veți fi redirecționat.');
+        setTimeout(() => {
+          router.push('/'); // Redirecționează la pagina principală
+        }, 2000);
+      } else {
+        setIsLoading(false);
       }
     };
 
@@ -27,10 +40,20 @@ const DashboardTeacher = () => {
   }, [router]);
 
   const handleLogout = () => {
-    document.cookie = 'isLoggedIn=; Max-Age=0; path=/;';
-    document.cookie = 'userRole=; Max-Age=0; path=/;';
-    router.push('/'); // Navigare la pagina principală
+    // Șterge cookie-urile pentru autentificare
+    document.cookie = 'accessToken=; Max-Age=0; path=/;';
+    document.cookie = 'refreshToken=; Max-Age=0; path=/;';
+    document.cookie = 'userType=; Max-Age=0; path=/;';
+    router.push('/'); // Redirecționează la pagina de login
   };
+
+  if (isLoading) {
+    return <div>Se încarcă...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
     <div className="dashboard-container">
@@ -44,7 +67,7 @@ const DashboardTeacher = () => {
           <li>
             <div
               className="menu-icon-container"
-              onClick={() => handleNavigation('/calendarteacher')} // Navigare corectă
+              onClick={() => handleNavigation('/calendarteacher')}
               style={{ cursor: 'pointer' }}
             >
               <img src="/calendar.png" alt="Calendar" className="menu-icon" />
@@ -55,7 +78,7 @@ const DashboardTeacher = () => {
           <li>
             <div
               className="menu-icon-container"
-              onClick={() => handleNavigation('/courses')} // Navigare corectă
+              onClick={() => handleNavigation('/courses')}
               style={{ cursor: 'pointer' }}
             >
               <img src="/agenda.png" alt="Courses" className="menu-icon" />
@@ -66,7 +89,7 @@ const DashboardTeacher = () => {
           <li>
             <div
               className="menu-icon-container"
-              onClick={() => handleNavigation('/settings')} // Navigare corectă
+              onClick={() => handleNavigation('/settings')}
               style={{ cursor: 'pointer' }}
             >
               <img src="/settings.png" alt="Settings" className="menu-icon" />
@@ -87,10 +110,10 @@ const DashboardTeacher = () => {
       {/* Main Content Section */}
       <div className="content">
         <div className="announcements">
-          <div className="announcement">Anunț 1 - Important!</div>
-          <div className="announcement">Anunț 2 - Verifică programările.</div>
-          <div className="announcement">Anunț 3 - Modificări de sală.</div>
-          <div className="announcement">Anunț 4 - Termen limită înscriere.</div>
+          <div className="announcement">Anunț 1 - Verifică examenele programate.</div>
+          <div className="announcement">Anunț 2 - Actualizări în orar.</div>
+          <div className="announcement">Anunț 3 - Noutăți despre studenți.</div>
+          <div className="announcement">Anunț 4 - Modificări administrative.</div>
         </div>
       </div>
     </div>

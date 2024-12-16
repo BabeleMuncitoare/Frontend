@@ -14,45 +14,50 @@ function ExamFetcher() {
 
   // Funcție pentru preluarea examenelor din API
   const fetchExams = async () => {
-    setLoading(true); // Activează indicatorul de încărcare
-    setError(""); // Resetează eroarea
+    setLoading(true);
+    setError("");
 
     try {
       const response = await axios.get(`http://127.0.0.1:8000/api/examen/?query=${searchTerm}`);
-      console.log("Răspuns API:", response.data); // Loghează răspunsul API
-      setData(response.data); // Stochează datele în stare
+      console.log("Răspuns API:", response.data);
+      setData(response.data);
     } catch (err) {
-      setError("Eroare la încărcarea datelor!"); // Setează eroarea
+      setError("Eroare la încărcarea datelor!");
       console.error("Eroare:", err);
     } finally {
-      setLoading(false); // Dezactivează indicatorul de încărcare
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchExams(); // Apelează funcția fetchExams la montare
+    fetchExams();
   }, []);
 
-  // Funcție pentru navigarea la pagina specifică rolului utilizatorului
-  const navigateToDashboard = () => {
+  // Funcție pentru obținerea rolului utilizatorului din cookie-uri
+  const getUserRole = (): string | null => {
     const userRole = document.cookie
       .split('; ')
-      .find((row) => row.startsWith('userRole='))
-      ?.split('=')[1]; // Extrage valoarea rolului din cookie-uri
+      .find((row) => row.startsWith('userType'))
+      ?.split('=')[1];
+    return userRole || null;
+  };
 
-    if (userRole === 'student') {
-      router.push('/dashboardstudent'); // Navighează la dashboard-ul studentului
-    } else if (userRole === 'professor') {
-      router.push('/dashboardteacher'); // Navighează la dashboard-ul profesorului
+  // Navigarea către calendarul corespunzător în funcție de rol
+  const navigateToCalendar = () => {
+    const role = getUserRole();
+    if (role === 'student') {
+      router.push('/calendarstudent');
+    } else if (role === 'professor') {
+      router.push('/calendarteacher');
     } else {
-      router.push('/'); // Dacă rolul este necunoscut, navighează la pagina principală
+      router.push('/'); // Rol necunoscut, navigare la pagina principală
     }
   };
 
   // Funcția pentru apăsarea tastei Enter în bara de căutare
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
-      fetchExams(); // Reia cererea cu termenul de căutare
+      fetchExams();
     }
   };
 
@@ -63,7 +68,7 @@ function ExamFetcher() {
         {/* Logo-ul cu navigare la dashboard specific rolului */}
         <div
           className="menu-icon-container"
-          onClick={navigateToDashboard} // Apelează funcția pentru navigarea la dashboard
+          onClick={() => router.push('/dashboardstudent')} // Navighează la dashboard
           style={{ cursor: 'pointer' }}
         >
           <img src="/logo.png" alt="USV Logo" className="logo" />
@@ -73,7 +78,7 @@ function ExamFetcher() {
           <li>
             <div
               className="menu-icon-container"
-              onClick={() => router.push('/calendar')} // Navigare la calendar
+              onClick={navigateToCalendar} // Navighează la calendar specific rolului
               style={{ cursor: 'pointer' }}
             >
               <img src="/calendar.png" alt="Calendar" className="menu-icon" />
@@ -92,8 +97,8 @@ function ExamFetcher() {
             placeholder="Caută..."
             className="search-input"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)} // Actualizează termenul de căutare
-            onKeyDown={handleKeyDown} // Ascultă evenimentul Enter
+            onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyDown={handleKeyDown}
           />
           <button className="search-button" onClick={fetchExams}>
             <img src="/search.png" alt="Search" className="search-icon" />
@@ -102,8 +107,8 @@ function ExamFetcher() {
 
         {/* Placeholder Content */}
         <div className="placeholder-content">
-          {loading && <p>Se încarcă...</p>} {/* Mesaj de încărcare */}
-          {error && <p style={{ color: "red" }}>{error}</p>} {/* Mesaj de eroare */}
+          {loading && <p>Se încarcă...</p>}
+          {error && <p style={{ color: "red" }}>{error}</p>}
           <ul>
             {data.items?.map((exam) => (
               <li key={exam.id}>

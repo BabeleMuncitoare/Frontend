@@ -1,4 +1,4 @@
-const API_URL = "http://127.0.0.1:8000/api";
+const API_URL = "https://bigbaba.yirade.dev/api";
 
 function getCookie(name: string): string | null {
     const value = `; ${document.cookie}`;
@@ -8,7 +8,7 @@ function getCookie(name: string): string | null {
 }
 
 export async function fetchUserExams() {
-    const token = getCookie('authToken');
+    const token = getCookie('accessToken');
 
   const response = await fetch(`${API_URL}/student/exams/`, {
     headers: { Authorization: `Bearer ${token}` },
@@ -18,7 +18,7 @@ export async function fetchUserExams() {
 }
 
 export async function scheduleExam(examData: any) {
-    const token = getCookie('authToken');
+    const token = getCookie('accessToken');
 
   const response = await fetch(`${API_URL}/exams/create/`, {
     method: "POST",

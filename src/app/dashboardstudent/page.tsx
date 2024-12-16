@@ -4,6 +4,14 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import './dashboardstudent.css';
 
+// Funcție pentru a extrage valoarea unui cookie
+const getCookie = (name: string): string | null => {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
+  return null;
+};
+
 const DashboardStudent = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true); // Pentru afișarea stării de încărcare
@@ -15,20 +23,16 @@ const DashboardStudent = () => {
 
   useEffect(() => {
     const checkAuthStatus = () => {
-      // Verifică autentificarea și rolul utilizatorului
-      const isLoggedIn = document.cookie.includes('isLoggedIn=true');
-      const userRole = document.cookie
-        .split('; ')
-        .find((row) => row.startsWith('userRole='))
-        ?.split('=')[1]; // Extrage rolul utilizatorului din cookie
+      const authToken = getCookie('accessToken'); // Extrage token-ul din cookie
+      const userRole = getCookie('userType'); // Extrage rolul utilizatorului din cookie
 
-      if (!isLoggedIn || userRole !== 'student') {
+      if (!authToken || userRole !== 'student') {
         setError('Acces neautorizat. Veți fi redirecționat.');
         setTimeout(() => {
           router.push('/'); // Redirecționează la pagina principală după 2 secunde
         }, 2000);
       } else {
-        setError(''); // Resetează erorile
+        setError('');
         setIsLoading(false); // Termină starea de încărcare
       }
     };
@@ -38,8 +42,9 @@ const DashboardStudent = () => {
 
   const handleLogout = () => {
     // Șterge cookie-urile pentru autentificare
-    document.cookie = 'isLoggedIn=; Max-Age=0; path=/;';
-    document.cookie = 'userRole=; Max-Age=0; path=/;';
+    document.cookie = 'accessToken=; Max-Age=0; path=/;';
+    document.cookie = 'refreshToken=; Max-Age=0; path=/;';
+    document.cookie = 'userType=; Max-Age=0; path=/;';
     router.push('/'); // Navigare la pagina principală
   };
 
@@ -63,7 +68,7 @@ const DashboardStudent = () => {
           <li>
             <div
               className="menu-icon-container"
-              onClick={() => handleNavigation('/calendarstudent')} // Navigare corectă
+              onClick={() => handleNavigation('/calendarstudent')}
               style={{ cursor: 'pointer' }}
             >
               <img src="/calendar.png" alt="Calendar" className="menu-icon" />
@@ -74,7 +79,7 @@ const DashboardStudent = () => {
           <li>
             <div
               className="menu-icon-container"
-              onClick={() => handleNavigation('/courses')} // Navigare corectă
+              onClick={() => handleNavigation('/courses')}
               style={{ cursor: 'pointer' }}
             >
               <img src="/agenda.png" alt="Courses" className="menu-icon" />
@@ -85,7 +90,7 @@ const DashboardStudent = () => {
           <li>
             <div
               className="menu-icon-container"
-              onClick={() => handleNavigation('/settings')} // Navigare 
+              onClick={() => handleNavigation('/settings')}
               style={{ cursor: 'pointer' }}
             >
               <img src="/settings.png" alt="Settings" className="menu-icon" />
