@@ -18,6 +18,9 @@ interface Exam {
   date: string;
   location: string;
   class_assigned: number;
+  created_by: number;
+  accepted: boolean;
+  rejected: boolean;
 }
 
 const CalendarStudentPage = () => {
@@ -137,7 +140,7 @@ const CalendarStudentPage = () => {
           <div className="placeholder-content">
             {exams.length > 0 ? (
               exams.map((exam, index) => (
-                <div key={index} className="card-button"
+                <div key={index} className={`card-button ${exam.accepted ? 'status-accepted' : exam.rejected ? 'status-rejected' : 'status-pending'}`}
                 onMouseEnter={() => {
                   if (exam.date) {
                     setHoveredDate(new Date(exam.date));

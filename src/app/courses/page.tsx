@@ -110,11 +110,11 @@ function ExamFetcher() {
           {loading && <p>Se încarcă...</p>}
           {error && <p style={{ color: "red" }}>{error}</p>}
           <ul>
-            {data.items?.map((exam) => (
+            {/*{data.items?.map((exam) => (
               <li key={exam.id}>
                 <button className="card-button">{exam.name} - {exam.description}</button>
               </li>
-            ))}
+            ))}*/}
           </ul>
         </div>
       </div>
