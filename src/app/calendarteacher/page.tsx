@@ -9,7 +9,7 @@ import "./calendarteacher.css";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
 
-import { fetchUserExams, updateExamStatus } from "@/app/services/examsService";
+import { fetchUserExams, acceptExam, rejectExam } from "@/app/services/examsService";
 
 
 interface Exam {
@@ -45,26 +45,40 @@ const CalendarTeacherPage = () => {
     loadExams();
   }, []);
 
-  const handleUpdateExamStatus = async (examId: number, accepted: boolean, rejected: boolean) => {
-    try {
-      const updatedExam = await updateExamStatus(examId, accepted, rejected);
-      console.log('Exam status updated successfully:', updatedExam);
-      // Actualizează starea examenelor după actualizare
-      setExams((prevExams) =>
-        prevExams.map((exam) =>
-          exam.id === examId ? { ...exam, accepted, rejected } : exam
-        )
-      );
-      setShowModal(false); // Închide modalul după actualizare
-    } catch (error) {
-      console.error('Error updating exam status:', error);
+   // Funcție pentru a accepta examenul
+   const handleAcceptExam = async () => {
+    if (selectedExam) {
+      try {
+        const response = await acceptExam(selectedExam.id, true);
+        console.log("Exam accepted:", response);
+        setExams((prevExams) =>
+          prevExams.map((exam) =>
+            exam.id === selectedExam.id ? { ...exam, accepted: true } : exam
+          )
+        );
+        setShowModal(false); // Închidem modalul
+      } catch (error) {
+        console.error("Error accepting exam:", error);
+      }
     }
   };
 
-  const handleButtonClick = (examId: number, accepted: boolean, rejected: boolean) => {
-    return () => {
-      handleUpdateExamStatus(examId, accepted, rejected);
-    };
+  // Funcție pentru a respinge examenul
+  const handleRejectExam = async () => {
+    if (selectedExam) {
+      try {
+        const response = await rejectExam(selectedExam.id, true); // Implementați funcția rejectExam în services
+        console.log("Exam rejected:", response);
+        setExams((prevExams) =>
+          prevExams.map((exam) =>
+            exam.id === selectedExam.id ? { ...exam, rejected: true } : exam
+          )
+        );
+        setShowModal(false); // Închidem modalul
+      } catch (error) {
+        console.error("Error rejecting exam:", error);
+      }
+    }
   };
 
   return (
@@ -114,8 +128,8 @@ const CalendarTeacherPage = () => {
               <div className="modal-content">
                 <h2>Raspuns examen: {selectedExam.subject}</h2>
                 <div className="modal-actions">
-                  <Button onClick={handleButtonClick(selectedExam.id, true, false)}>Acceptare examen</Button>
-                  <Button onClick={handleButtonClick(selectedExam.id, false, true)}>Respingere examen</Button>
+                  <Button onClick={handleAcceptExam}>Acceptare examen</Button>
+                  <Button onClick={handleRejectExam}>Respingere examen</Button>
                 </div>
                 <div className="modal-actions">
                   <Button onClick={() => setShowModal(false)}>Anulează</Button>
