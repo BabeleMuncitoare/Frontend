@@ -64,7 +64,11 @@ export default function LoginPage() {
       setCookie('userEmail', user.email, 7);
       setCookie('userType', user.user_type, 7);
       setCookie('username', user.username, 7);
-  
+      
+      console.log('Refresh Token:', refresh); // Verifică token-ul refresh primit
+      console.log('Access Token:', access); 
+
+      console.log('Cookie Refresh Token:', document.cookie);
       // Redirecționează în funcție de user_type
       if (user.user_type === 'student') {
         handleNavigation('/dashboardstudent');

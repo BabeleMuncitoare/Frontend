@@ -34,7 +34,7 @@ const CalendarStudentPage = () => {
   const [formData, setFormData] = useState({
     subject: "",
     date: undefined as Date | undefined,
-    time: "", 
+    time: "",
     location: "",
     class_assigned: "",
   });
@@ -47,7 +47,7 @@ const CalendarStudentPage = () => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0"); // Luna este indexată de la 0
     const day = String(date.getDate()).padStart(2, "0");
-  
+
     return `${year}-${month}-${day}`;
   };
 
@@ -62,9 +62,20 @@ const CalendarStudentPage = () => {
     const loadExams = async () => {
       try {
         const examsData = await fetchUserExams();
-        setExams(examsData);
   
-        const dates = examsData.map((exam: Exam) => new Date(exam.date));
+        // Filtrăm examenele respinse
+        const acceptedExams = examsData.filter((exam: Exam) => !exam.rejected);
+  
+        // Setăm examenele acceptate în starea locală
+        setExams(acceptedExams);
+  
+        // Extragem datele pentru examenele acceptate și excludem data curentă
+        const currentDate = new Date().toLocaleDateString();  // Data curentă, formatată
+  
+        const dates = acceptedExams
+          .map((exam: Exam) => new Date(exam.date)) // Creăm obiecte Date
+          .filter((examDate: Date) => examDate.toLocaleDateString() !== currentDate); // Excludem data curentă
+  
         setHighlightedDates(dates);
       } catch (error) {
         console.error("Error fetching exams:", error);
@@ -83,6 +94,8 @@ const CalendarStudentPage = () => {
     loadExams();
     loadClasses();
   }, []);
+  
+  
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -100,7 +113,7 @@ const CalendarStudentPage = () => {
         const formattedDate = formatDateToDatabase(formData.date);
 
         const combinedDateTime = `${formattedDate}T${formData.time}:00Z`;
-        
+
         await scheduleExam({
           subject: formData.subject,
           date: combinedDateTime,
@@ -138,15 +151,18 @@ const CalendarStudentPage = () => {
         {/* Placeholder Content and Static Calendar */}
         <div className="content-row">
           <div className="placeholder-content">
-            {exams.length > 0 ? (
-              exams.map((exam, index) => (
-                <div key={index} className={`card-button ${exam.accepted ? 'status-accepted' : exam.rejected ? 'status-rejected' : 'status-pending'}`}
-                onMouseEnter={() => {
-                  if (exam.date) {
-                    setHoveredDate(new Date(exam.date));
-                  }
-                }}
-                onMouseLeave={() => setHoveredDate(null)}>
+            {exams.filter(exam => !exam.rejected).length > 0 ? (
+              exams.filter(exam => !exam.rejected).map((exam, index) => (
+                <div
+                  key={index}
+                  className={`card-button ${exam.accepted ? 'status-accepted' : exam.rejected ? 'status-rejected' : 'status-pending'}`}
+                  onMouseEnter={() => {
+                    if (exam.date) {
+                      setHoveredDate(new Date(exam.date));
+                    }
+                  }}
+                  onMouseLeave={() => setHoveredDate(null)}>
+
                   <strong>{exam.subject}</strong>
                   <p>Data: {new Date(exam.date).toLocaleDateString()}</p>
                   <p>Locație: {exam.location}</p>
@@ -159,7 +175,7 @@ const CalendarStudentPage = () => {
 
           <div className="static-calendar">
             <DayPicker
-              defaultMonth={new Date(2025, 0)}
+              defaultMonth={new Date(new Date().getFullYear(), 0)}
               mode="single"
               selected={calendarSelectedDate}
               onSelect={setCalendarSelectedDate}
@@ -169,7 +185,7 @@ const CalendarStudentPage = () => {
               }}
               modifiersStyles={{
                 highlighted: { backgroundColor: "#4a3fd6", color: "white" },
-                hovered: { border: "2px solid rgb(57, 190, 57)" },
+                hovered: { border: "4px solid rgb(13, 10, 94)" },
               }}
               className="custom-calendar"
             />
@@ -202,20 +218,20 @@ const CalendarStudentPage = () => {
               />
             </div>
             <div className="form-field">
-  <label>Grupa:</label>
-  <select
-    name="class_assigned"
-    value={formData.class_assigned}
-    onChange={handleInputChange}
-  >
-    <option value="">Selectați grupa</option>
-    {classes.map((c) => (
-      <option key={c.id} value={c.id}>
-        {c.name}
-      </option>
-    ))}
-  </select>
-</div>
+              <label>Grupa:</label>
+              <select
+                name="class_assigned"
+                value={formData.class_assigned}
+                onChange={handleInputChange}
+              >
+                <option value="">Selectați grupa</option>
+                {classes.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.name}
+                  </option>
+                ))}
+              </select>
+            </div>
 
             <div className="form-field">
               <label>Data:</label>
@@ -225,19 +241,19 @@ const CalendarStudentPage = () => {
                     {formData.date
                       ? capitalizeFirstLetter(
                         formData.date.toLocaleDateString("ro-RO", {
-                            weekday: "long",
-                            year: "numeric",
-                            month: "numeric",
-                            day: "numeric",
-                          })
-                        )
+                          weekday: "long",
+                          year: "numeric",
+                          month: "numeric",
+                          day: "numeric",
+                        })
+                      )
                       : "Selectați Data"}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="calendar-popover-content">
                   <DayPicker
                     captionLayout="dropdown"
-                    defaultMonth={new Date(2025, 0)}
+                    defaultMonth={new Date(new Date().getFullYear(), 0)}
                     mode="single"
                     selected={formData.date || undefined}
                     onSelect={(date) => handleDateSelect(date!)}
