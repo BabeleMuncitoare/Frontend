@@ -1,29 +1,36 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-export function middleware(request: NextRequest) {
-  const isLoggedInCookie = request.cookies.get('isLoggedIn');
-  const userRoleCookie = request.cookies.get('userRole');
+export function middleware(req: NextRequest) {
+  const accessToken = req.cookies.get('accessToken')?.value; // Obține valoarea token-ului
+  const userType = req.cookies.get('userType')?.value; // Obține rolul utilizatorului
 
-  const isLoggedIn = isLoggedInCookie?.value === 'true';
-  const userRole = userRoleCookie?.value;
+  const url = req.nextUrl.clone();
 
-  const protectedPaths = ['/dashboardstudent', '/dashboardteacher'];
-  const isProtectedPath = protectedPaths.some((path) =>
-    request.nextUrl.pathname.startsWith(path)
-  );
-
-  // Redirecționează utilizatorii delogați care încearcă să acceseze pagini protejate
-  if (!isLoggedIn && isProtectedPath) {
-    return NextResponse.redirect(new URL('/', request.url));
+  // Protejăm accesul la dashboard-ul studentului
+  if (req.nextUrl.pathname.startsWith('/dashboardstudent')) {
+    if (!accessToken || userType !== 'student') {
+      url.pathname = '/'; // Redirecționează la pagina principală
+      return NextResponse.redirect(url);
+    }
   }
 
-  // Redirecționează utilizatorii autentificați care încearcă să acceseze pagina principală sau login
-  if (isLoggedIn && (request.nextUrl.pathname === '/' || request.nextUrl.pathname === '/login')) {
-    if (userRole === 'student') {
-      return NextResponse.redirect(new URL('/dashboardstudent', request.url));
-    } else if (userRole === 'profesor') {
-      return NextResponse.redirect(new URL('/dashboardteacher', request.url));
+  // Protejăm accesul la dashboard-ul profesorului
+  if (req.nextUrl.pathname.startsWith('/dashboardteacher')) {
+    if (!accessToken || userType !== 'professor') {
+      url.pathname = '/'; // Redirecționează la pagina principală
+      return NextResponse.redirect(url);
+    }
+  }
+
+  // Redirecționează utilizatorii autentificați departe de pagina de login
+  if (req.nextUrl.pathname === '/') {
+    if (accessToken && userType === 'student') {
+      url.pathname = '/dashboardstudent'; // Redirecționează la dashboard-ul studentului
+      return NextResponse.redirect(url);
+    } else if (accessToken && userType === 'professor') {
+      url.pathname = '/dashboardteacher'; // Redirecționează la dashboard-ul profesorului
+      return NextResponse.redirect(url);
     }
   }
 

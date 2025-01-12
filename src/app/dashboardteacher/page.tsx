@@ -4,10 +4,9 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import './dashboardteacher.css';
 
-// Funcție pentru a extrage valoarea unui cookie
 const getCookie = (name: string): string | null => {
   const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
+  const parts = value.split(`; ${name}=`); 
   if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
   return null;
 };
@@ -17,35 +16,50 @@ const DashboardTeacher = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
 
-  const handleNavigation = (path: string) => {
-    router.push(path);
+  const handleLogout = () => {
+    document.cookie = 'accessToken=; Max-Age=0; path=/;';
+    document.cookie = 'refreshToken=; Max-Age=0; path=/;';
+    document.cookie = 'userType=; Max-Age=0; path=/;';
+    router.push('/');
   };
 
   useEffect(() => {
     const checkAuthStatus = () => {
-      const authToken = getCookie('accessToken'); // Token-ul de acces
-      const userRole = getCookie('userType'); // Rolul utilizatorului
+      const authToken = getCookie('accessToken');
+      const userRole = getCookie('userType');
 
       if (!authToken || userRole !== 'professor') {
         setError('Acces neautorizat. Veți fi redirecționat.');
         setTimeout(() => {
-          router.push('/'); // Redirecționează la pagina principală
+          handleLogout();
         }, 2000);
       } else {
+        setError('');
         setIsLoading(false);
       }
     };
 
     checkAuthStatus();
-  }, [router]);
 
-  const handleLogout = () => {
-    // Șterge cookie-urile pentru autentificare
-    document.cookie = 'accessToken=; Max-Age=0; path=/;';
-    document.cookie = 'refreshToken=; Max-Age=0; path=/;';
-    document.cookie = 'userType=; Max-Age=0; path=/;';
-    router.push('/'); // Redirecționează la pagina de login
-  };
+    // Prevent back navigation
+    const addDummyHistory = () => {
+      window.history.pushState(null, '', window.location.href);
+    };
+
+    const preventBackNavigation = () => {
+      addDummyHistory();
+      window.onpopstate = () => {
+        addDummyHistory();
+        alert('Navigarea înapoi nu este permisă. Pentru a ieși, folosiți butonul "Deconectare".');
+      };
+    };
+
+    preventBackNavigation();
+
+    return () => {
+      window.onpopstate = null; // Cleanup
+    };
+  }, [router]);
 
   if (isLoading) {
     return <div>Se încarcă...</div>;
@@ -57,49 +71,22 @@ const DashboardTeacher = () => {
 
   return (
     <div className="dashboard-container">
-      {/* Sidebar Section */}
       <div className="sidebar">
-        <div onClick={() => handleNavigation('/dashboardteacher')} style={{ cursor: 'pointer' }}>
+        <div onClick={() => router.push('/dashboardteacher')} style={{ cursor: 'pointer' }}>
           <img src="/logo.png" alt="USV Logo" className="logo" />
         </div>
         <ul>
-          {/* Calendar Button */}
           <li>
             <div
               className="menu-icon-container"
-              onClick={() => handleNavigation('/calendarteacher')}
+              onClick={() => router.push('/calendarteacher')}
               style={{ cursor: 'pointer' }}
             >
               <img src="/calendar.png" alt="Calendar" className="menu-icon" />
               <div className="menu-tooltip">Calendar</div>
             </div>
           </li>
-          {/*}
-          <li>
-            <div
-              className="menu-icon-container"
-              onClick={() => handleNavigation('/courses')}
-              style={{ cursor: 'pointer' }}
-            >
-              <img src="/agenda.png" alt="Courses" className="menu-icon" />
-              <div className="menu-tooltip">Cursuri</div>
-            </div>
-          </li>
-          
-          <li>
-            <div
-              className="menu-icon-container"
-              onClick={() => handleNavigation('/settings')}
-              style={{ cursor: 'pointer' }}
-            >
-              <img src="/settings.png" alt="Settings" className="menu-icon" />
-              <div className="menu-tooltip">Setări</div>
-            </div>
-          </li>
-          */}
         </ul>
-
-        {/* Logout Button */}
         <div className="logout-container">
           <button className="logout-button" onClick={handleLogout}>
             <img src="/logout.png" alt="Logout Icon" className="menu-icon" />
@@ -108,7 +95,6 @@ const DashboardTeacher = () => {
         </div>
       </div>
 
-      {/* Main Content Section */}
       <div className="content">
         <div className="announcements">
           <div className="announcement">Anunț 1 - Verifică examenele programate.</div>
