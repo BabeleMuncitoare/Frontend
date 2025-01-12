@@ -106,7 +106,7 @@ function ExamFetcher() {
         </div>
 
         {/* Placeholder Content */}
-        <div className="placeholder-content">
+        <div className="placeholder-content-courses">
           {loading && <p>Se încarcă...</p>}
           {error && <p style={{ color: "red" }}>{error}</p>}
           <ul>

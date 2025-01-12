@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import DOMPurify from 'dompurify'; // Import DOMPurify
 import { useRouter } from 'next/navigation';
 import './login.css';
 import { login } from '@/app/services/loginService';
@@ -20,11 +21,16 @@ export default function LoginPage() {
 
   const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
 
+  // Utilizează DOMPurify pentru a curăța intrările utilizatorului
+  const sanitizeInput = (input: string) => {
+    return DOMPurify.sanitize(input);
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: sanitizeInput(value), // Curăță input-ul utilizatorului
     }));
   };
 
@@ -35,20 +41,20 @@ export default function LoginPage() {
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); 
-    setError(''); 
-  
+    e.preventDefault();
+    setError('');
+
     const { username, password } = formData;
-  
+
     if (!username || !password) {
       setError('Toate câmpurile sunt obligatorii.');
       return;
     }
-  
+
     try {
       // Trimite cererea de autentificare la backend
       const response = await login(username, password);
-  
+
       // Extrage user_type din răspuns
       const { refresh, access, user } = response;
       console.log('Răspunsul backend-ului:', response);
@@ -56,17 +62,17 @@ export default function LoginPage() {
       if (!refresh || !access || !user || !user.user_type) {
         throw new Error('Răspunsul backend-ului este invalid.');
       }
-  
+
       // Salvează rolul utilizatorului în cookies
-      setCookie('refreshToken', refresh, 7); 
-      setCookie('accessToken', access, 1); 
+      setCookie('refreshToken', refresh, 7);
+      setCookie('accessToken', access, 1);
       setCookie('userId', user.id.toString(), 7);
       setCookie('userEmail', user.email, 7);
       setCookie('userType', user.user_type, 7);
       setCookie('username', user.username, 7);
-      
+
       console.log('Refresh Token:', refresh); // Verifică token-ul refresh primit
-      console.log('Access Token:', access); 
+      console.log('Access Token:', access);
 
       console.log('Cookie Refresh Token:', document.cookie);
       // Redirecționează în funcție de user_type
@@ -80,11 +86,9 @@ export default function LoginPage() {
     } catch (err: any) {
       // Loghează eroarea pentru debugging
       console.error('Eroare la autentificare:', err);
-      setError(err.message || 'Eroare la conectarea cu serverul.');
+      setError(DOMPurify.sanitize(err.message) || 'Eroare la conectarea cu serverul.');
     }
   };
-
-  
 
   return (
     <div className="login-container">
@@ -119,7 +123,7 @@ export default function LoginPage() {
                 style={{ cursor: 'pointer' }}
               />
             </div>
-            {error && <p className="error-message">{error}</p>}
+            {error && <p className="error-message">{DOMPurify.sanitize(error)}</p>}
           </div>
           <div className="button-submit">
             <button type="submit">Login</button>

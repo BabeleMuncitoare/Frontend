@@ -69,13 +69,10 @@ const CalendarStudentPage = () => {
         // Setăm examenele acceptate în starea locală
         setExams(acceptedExams);
   
-        // Extragem datele pentru examenele acceptate și excludem data curentă
-        const currentDate = new Date().toLocaleDateString();  // Data curentă, formatată
+        // Extragem datele pentru examenele acceptate
+        const dates = acceptedExams.map((exam: Exam) => new Date(exam.date));
   
-        const dates = acceptedExams
-          .map((exam: Exam) => new Date(exam.date)) // Creăm obiecte Date
-          .filter((examDate: Date) => examDate.toLocaleDateString() !== currentDate); // Excludem data curentă
-  
+        // Setăm doar datele care au examene programate
         setHighlightedDates(dates);
       } catch (error) {
         console.error("Error fetching exams:", error);
@@ -84,8 +81,8 @@ const CalendarStudentPage = () => {
   
     const loadClasses = async () => {
       try {
-        const classesData = await fetchClasses(); // Preia grupele
-        setClasses(classesData); // Salvează grupele în starea locală
+        const classesData = await fetchClasses();
+        setClasses(classesData);
       } catch (error) {
         console.error("Error fetching classes:", error);
       }
@@ -95,6 +92,12 @@ const CalendarStudentPage = () => {
     loadClasses();
   }, []);
   
+  const isDateHighlighted = (date: Date): boolean => {
+    return highlightedDates.some(
+      (highlightedDate) =>
+        highlightedDate.toDateString() === date.toDateString()
+    );
+  };
   
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -177,8 +180,12 @@ const CalendarStudentPage = () => {
             <DayPicker
               defaultMonth={new Date(new Date().getFullYear(), 0)}
               mode="single"
-              selected={calendarSelectedDate}
-              onSelect={setCalendarSelectedDate}
+              selected={calendarSelectedDate && isDateHighlighted(calendarSelectedDate) ? calendarSelectedDate : undefined}
+              onSelect={(date) => {
+                if (date && isDateHighlighted(date)) {
+                  setCalendarSelectedDate(date);
+                }
+              }}              
               modifiers={{
                 highlighted: highlightedDates,
                 hovered: hoveredDate ? [hoveredDate] : [],

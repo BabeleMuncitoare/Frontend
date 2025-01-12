@@ -74,7 +74,7 @@ const DashboardTeacher = () => {
               <div className="menu-tooltip">Calendar</div>
             </div>
           </li>
-          {/* Courses Button */}
+          {/*}
           <li>
             <div
               className="menu-icon-container"
@@ -85,7 +85,7 @@ const DashboardTeacher = () => {
               <div className="menu-tooltip">Cursuri</div>
             </div>
           </li>
-          {/* Settings Button */}
+          
           <li>
             <div
               className="menu-icon-container"
@@ -96,6 +96,7 @@ const DashboardTeacher = () => {
               <div className="menu-tooltip">Setări</div>
             </div>
           </li>
+          */}
         </ul>
 
         {/* Logout Button */}
