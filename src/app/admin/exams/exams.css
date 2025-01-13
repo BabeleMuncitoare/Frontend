@@ -1,0 +1,71 @@
+.exams-management {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  .exam-title {
+    text-align: center;
+    color: black;
+    margin-bottom: 20px;
+  }
+  
+  .filters {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+  .filters label {
+    font-size: 14px;
+    color: black;
+  }
+  
+  .filters select {
+    margin-left: 10px;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  
+  .exam-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .exam-item {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .exam-item h3 {
+    margin: 0 0 10px;
+    color: #007bff;
+  }
+  
+  .exam-item.accepted h3 {
+    color: green;
+  }
+  
+  .exam-item.rejected h3 {
+    color: red;
+  }
+  
+  .exam-item.pending h3 {
+    color: goldenrod;
+  }
+  
+  .exam-item p {
+    margin: 5px 0;
+    color: #555;
+  }
+  
+  .error-message {
+    color: red;
+    text-align: center;
+    font-weight: bold;
+  }
+  

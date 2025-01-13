@@ -1,19 +1,25 @@
-h1 {
-  padding-top: 40px;
-  padding-bottom: 40px;
-  text-align-last: center;
-  font-size: larger;
+.admin-dashboard {
+  padding: 20px;
+  font-family: Arial, sans-serif;
 }
+
+.admin {
+  text-align: center;
+  color:black;
+  font-size: x-large;
+  padding-top: 20px;
+  padding-bottom: 40px;
+}
+
 .admin-menu {
   display: flex;
   justify-content: center;
-  gap: 15px;
-  margin-top: 20px;
+  margin: 20px 0;
 }
 
 .admin-menu button {
+  margin: 0 10px;
   padding: 10px 20px;
-  font-size: 16px;
   background-color: #007bff;
   color: white;
   border: none;
@@ -24,4 +30,24 @@ h1 {
 
 .admin-menu button:hover {
   background-color: #0056b3;
+}
+
+.admin-logout-container {
+  text-align: center;
+  margin-top: 20px;
+  padding-top: 60px;
+}
+
+.admin-logout-button {
+  padding: 10px 20px;
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.admin-logout-button:hover {
+  background-color: #e60000;
 }
