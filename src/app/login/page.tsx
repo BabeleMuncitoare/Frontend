@@ -72,8 +72,10 @@ export default function LoginPage() {
         router.replace('/dashboardstudent');
       } else if (user.user_type === 'professor') {
         router.replace('/dashboardteacher');
+      } else if (user.user_type === 'admin') {
+        router.replace('/admin');
       } else {
-        setError('Rol necunoscut. Contactați administratorul.');
+        setError(`Rol necunoscut: ${user.user_type}`);
       }
     } catch (err: any) {
       // Loghează eroarea pentru debugging

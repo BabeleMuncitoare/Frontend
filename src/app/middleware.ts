@@ -23,6 +23,13 @@ export function middleware(req: NextRequest) {
     }
   }
 
+  if (req.nextUrl.pathname.startsWith('/dashboardadmin')) {
+    if (!accessToken || userType !== 'admin') {
+      url.pathname = '/'; // Redirecționează la pagina principală
+      return NextResponse.redirect(url);
+    }
+  }
+
   // Redirecționează utilizatorii autentificați departe de pagina de login
   if (req.nextUrl.pathname === '/') {
     if (accessToken && userType === 'student') {
@@ -31,6 +38,9 @@ export function middleware(req: NextRequest) {
     } else if (accessToken && userType === 'professor') {
       url.pathname = '/dashboardteacher'; // Redirecționează la dashboard-ul profesorului
       return NextResponse.redirect(url);
+    } else if (accessToken && userType === 'admin') {
+      url.pathname = '/admin';
+      return NextResponse.redirect (url);
     }
   }
 

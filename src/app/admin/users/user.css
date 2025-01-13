@@ -1,0 +1,43 @@
+.filter-container {
+  margin: 20px 0;
+  text-align: center;
+}
+
+.filter-dropdown {
+  padding: 5px 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  outline: none;
+  cursor: pointer;
+  color:black;
+}
+
+.filter-dropdown:focus {
+  border-color: #007bff;
+}
+
+ul {
+  list-style: none;
+  padding-left: 5vw;
+  padding-right: 5vw;
+}
+
+ul li {
+  background: #f4f4f4;
+  margin: 5px 0;
+  padding: 10px;
+  padding-left: 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  color: black;
+}
+
+.user{
+    padding-top: 40px;
+    padding-bottom: 40px;
+    text-align-last: center;
+    font-size: larger;
+}
+
+  
