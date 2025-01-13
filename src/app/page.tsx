@@ -7,6 +7,7 @@ import './globals.css';
 const HomePage = () => {
   const router = useRouter();
   const [showModal, setShowModal] = useState(false);
+  const [announcements, setAnnouncements] = useState<string[]>([]); // Starea pentru anunțuri
   const names = ["Ilisei Ciprian", "Cudla Cristian", "Popescu Luis", "Ecoboaea Denis", "Ababi Vlad"];
 
   const handleNavigation = (path: string) => {
@@ -30,6 +31,40 @@ const HomePage = () => {
 
     checkAuthStatus();
   }, [router]);*/
+
+  // Fetch all announcements (GET request)
+  useEffect(() => {
+    const fetchAnnouncements = async () => {
+      try {
+        const response = await fetch('/api/admin/announcements/');
+        if (response.ok) {
+          const data = await response.json();
+          setAnnouncements(data); // Setează anunțurile în stare
+        } else {
+          console.error('Error fetching announcements:', response.status);
+        }
+      } catch (error) {
+        console.error('Error fetching announcements:', error);
+      }
+    };
+
+    fetchAnnouncements(); // Apelăm funcția de fetch când componenta se montează
+  }, []); // Se execută o singură dată la montarea componentei
+
+  // Fetch a specific announcement by ID (GET request with pk)
+  const fetchAnnouncementById = async (id: number) => {
+    try {
+      const response = await fetch(`/api/admin/announcements/${id}/`);
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Fetched Announcement:', data); // Afișează detaliile anunțului
+      } else {
+        console.error('Error fetching announcement:', response.status);
+      }
+    } catch (error) {
+      console.error('Error fetching announcement:', error);
+    }
+  };
 
   return (
     <div className="dashboard-container">
@@ -76,11 +111,17 @@ const HomePage = () => {
 
         {/* Announcements Section */}
         <div className="announcements">
-          <div className="announcement">Anunț 1 - Important!</div>
-          <div className="announcement">Anunț 2 - Verifică programările.</div>
-          <div className="announcement">Anunț 3 - Modificări de sală.</div>
-          <div className="announcement">Anunț 4 - Termen limită înscriere.</div>
+          {announcements.length > 0 ? (
+            announcements.map((announcement, index) => (
+              <div key={index} className="announcement">
+                {announcement}
+              </div>
+            ))
+          ) : (
+            <div className="announcement">Nu există anunțuri disponibile.</div>
+          )}
         </div>
+
 
         {/* Useful Links Section */}
         <div className="useful-links">

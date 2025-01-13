@@ -35,8 +35,9 @@ const CalendarTeacherPage = () => {
     const loadExams = async () => {
       try {
         const examsData = await fetchUserExams();
-        setExams(examsData);
-
+        const acceptedExams = examsData.filter((exam: Exam) => !exam.rejected);
+        setExams(acceptedExams);
+        
       } catch (error) {
         console.error("Error fetching exams:", error);
       }
@@ -81,6 +82,19 @@ const CalendarTeacherPage = () => {
     }
   };
 
+  const getStatusLabel = (exam: Exam) => {
+    if (exam.accepted) {
+      return "Acceptat";
+    } else if (exam.rejected) {
+      return "Respins";
+    } else {
+      return "În așteptare";
+    }
+  };
+
+  const pendingExams = exams.filter((exam) => !exam.accepted && !exam.rejected);
+  const acceptedExams = exams.filter((exam) => exam.accepted);
+  
   return (
     <div className="dashboard-container">
       {/* Sidebar Section */}
@@ -96,32 +110,52 @@ const CalendarTeacherPage = () => {
       {/* Main Content Section */}
       <div className="calendar-page-content">
         <h1 className="calendar-page-header">Examene in asteptare</h1>
+          <h2>Examene în așteptare</h2>
+         {/* Examene în așteptare */}
+         <div className="content-row">
 
-        {/* Placeholder Content and Static Calendar */}
-        <div className="content-row">
           <div className="placeholder-content">
-            {exams.length > 0 ? (
-              exams.map((exam) => (
-                <div key={exam.id} className='card-button'
+            {pendingExams.length > 0 ? (
+              pendingExams.map((exam) => (
+                <div
+                  key={exam.id}
+                  className="card-button"
                   onClick={() => {
                     setSelectedExam(exam);
                     setShowModal(true);
                   }}
-                  onMouseEnter={() => {
-                    if (exam.date) {
-                      setHoveredDate(new Date(exam.date));
-                    }
-                  }}
-                  onMouseLeave={() => setHoveredDate(null)}>
+                >
                   <strong>{exam.subject}</strong>
                   <p>Data: {new Date(exam.date).toLocaleDateString()}</p>
                   <p>Locație: {exam.location}</p>
+                  <p>Status: {getStatusLabel(exam)}</p>
                 </div>
               ))
             ) : (
-              <p>Nu există examene in asteptare momentan.</p>
+              <p>Nu există examene în așteptare momentan.</p>
             )}
           </div>
+        </div>
+<h2>Examene acceptate</h2>
+        {/* Examene acceptate */}
+        <div className="content-row">
+          
+          <div className="placeholder-content">
+            {acceptedExams.length > 0 ? (
+              acceptedExams.map((exam) => (
+                <div key={exam.id} className="card-button">
+                  <strong>{exam.subject}</strong>
+                  <p>Data: {new Date(exam.date).toLocaleDateString()}</p>
+                  <p>Locație: {exam.location}</p>
+                  <p>Status: {getStatusLabel(exam)}</p>
+                </div>
+              ))
+            ) : (
+              <p>Nu există examene acceptate momentan.</p>
+            )}
+          </div>
+        </div>
+
           {/* Modal Section */}
           {showModal && selectedExam && (
             <div className="modal-overlay">
@@ -139,7 +173,7 @@ const CalendarTeacherPage = () => {
           )}
         </div>
       </div>
-    </div>
+
   );
 };
 
