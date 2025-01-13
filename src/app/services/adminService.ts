@@ -136,3 +136,28 @@ export async function updateAnnouncement(data: { id: number; title: string; cont
     if (!response.ok) throw new Error('Failed to update announcement');
     return await response.json();
 }
+
+export async function fetchProfessorsByIds(professorIds: unknown[]): Promise<any[]> {
+    // Filtrăm pentru a ne asigura că toate ID-urile sunt de tipul number
+    const validProfessorIds = professorIds.filter((id): id is number => typeof id === 'number');
+  
+    // Construim query-ul pentru ID-urile profesorilor
+    const idsParam = validProfessorIds.join(','); // Formatează ID-urile într-un singur string de tipul "1,2,3"
+  
+    const token = getCookie('accessToken');
+    const response = await fetch(`${API_URL}/professors/?ids=${idsParam}`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Error response data:', errorData);
+      throw new Error(errorData.error || 'Eroare la obținerea profesorilor.');
+    }
+  
+    return await response.json();
+  }
+  
