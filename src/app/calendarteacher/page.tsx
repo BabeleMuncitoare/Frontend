@@ -112,7 +112,7 @@ const CalendarTeacherPage = () => {
         <h1 className="calendar-page-header">Examene in asteptare</h1>
           <h2>Examene în așteptare</h2>
          {/* Examene în așteptare */}
-         <div className="content-row">
+        <div className="content-row">
 
           <div className="placeholder-content">
             {pendingExams.length > 0 ? (
@@ -136,7 +136,7 @@ const CalendarTeacherPage = () => {
             )}
           </div>
         </div>
-<h2>Examene acceptate</h2>
+        <h2>Examene acceptate</h2>
         {/* Examene acceptate */}
         <div className="content-row">
           

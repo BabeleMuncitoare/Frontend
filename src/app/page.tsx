@@ -1,44 +1,34 @@
 'use client';
-
-import React, {useState, useEffect } from 'react';
+const API_URL = "https://bigbaba.yirade.dev/api";
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import './globals.css';
+
+interface Announcement {
+  id: number;
+  title: string;
+  content: string;
+  created_at: string;
+  updated_at: string;
+}
 
 const HomePage = () => {
   const router = useRouter();
   const [showModal, setShowModal] = useState(false);
-  const [announcements, setAnnouncements] = useState<string[]>([]); // Starea pentru anunțuri
+  const [announcements, setAnnouncements] = useState<Announcement[]>([]); // Starea pentru anunțuri
   const names = ["Ilisei Ciprian", "Cudla Cristian", "Popescu Luis", "Ecoboaea Denis", "Ababi Vlad"];
 
   const handleNavigation = (path: string) => {
     router.push(path);
   };
 
-  /*useEffect(() => {
-    const checkAuthStatus = () => {
-      const isLoggedIn = document.cookie.includes('isLoggedIn=true');
-      const userRole = document.cookie.split('; ').find((row) => row.startsWith('userRole='));
-
-      if (isLoggedIn && userRole) {
-        const role = userRole.split('=')[1];
-        if (role === 'student') {
-          handleNavigation('/dashboardstudent');
-        } else if (role === 'profesor') {
-          handleNavigation('/dashboardteacher');
-        }
-      }
-    };
-
-    checkAuthStatus();
-  }, [router]);*/
-
   // Fetch all announcements (GET request)
   useEffect(() => {
     const fetchAnnouncements = async () => {
       try {
-        const response = await fetch('/api/admin/announcements/');
+        const response = await fetch(`${API_URL}/announcements/`);
         if (response.ok) {
-          const data = await response.json();
+          const data: Announcement[] = await response.json();
           setAnnouncements(data); // Setează anunțurile în stare
         } else {
           console.error('Error fetching announcements:', response.status);
@@ -50,21 +40,6 @@ const HomePage = () => {
 
     fetchAnnouncements(); // Apelăm funcția de fetch când componenta se montează
   }, []); // Se execută o singură dată la montarea componentei
-
-  // Fetch a specific announcement by ID (GET request with pk)
-  const fetchAnnouncementById = async (id: number) => {
-    try {
-      const response = await fetch(`/api/admin/announcements/${id}/`);
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Fetched Announcement:', data); // Afișează detaliile anunțului
-      } else {
-        console.error('Error fetching announcement:', response.status);
-      }
-    } catch (error) {
-      console.error('Error fetching announcement:', error);
-    }
-  };
 
   return (
     <div className="dashboard-container">
@@ -110,19 +85,24 @@ const HomePage = () => {
         </div>
 
         {/* Announcements Section */}
-        <div className="announcements">
-          {announcements.length > 0 ? (
-            announcements.map((announcement, index) => (
-              <div key={index} className="announcement">
-                {announcement}
-              </div>
-            ))
-          ) : (
-            <div className="announcement">Nu există anunțuri disponibile.</div>
-          )}
+        <div className='content'>
+          <div className="announcements-container">
+            <div className="announcements">
+              {announcements.length > 0 ? (
+              announcements.map((announcement, index) => (
+                <div key={index} className="announcement">
+                  {/* Afișează titlul și conținutul anunțului */}
+                  <h3>{announcement.title}</h3>
+                  <p>{announcement.content}</p>
+                </div>
+              ))
+            ) : (
+              <div className="announcement">Nu există anunțuri disponibile.</div>
+              )}
+            </div>
+          </div>
+
         </div>
-
-
         {/* Useful Links Section */}
         <div className="useful-links">
           <h2>Link-uri utile</h2>
@@ -137,35 +117,34 @@ const HomePage = () => {
               </a>
             </li>
             <li>
-              {/* Folosim Link pentru navigare internă */}
-                <a>Regulament examene</a>              
+              <a>Regulament examene</a>              
             </li>
             <li>
-                <a>Întrebări frecvente</a>
+              <a>Întrebări frecvente</a>
             </li>
           </ul>
         </div>
 
         {/* Modal for Info */}
-      {showModal && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <h1>Proiect realizat de:</h1>
-            <ul>
-              {names.map((name, index) => (
-                <li key={index}>{name}</li>
-              ))}
-            </ul>
-            <button
-              type="button"
-              onClick={() => setShowModal(false)} // Închide modalul
-              className="cancel-button"
-            >
-              Închide
-            </button>
+        {showModal && (
+          <div className="modal-overlay">
+            <div className="modal-content">
+              <h1>Proiect realizat de:</h1>
+              <ul>
+                {names.map((name, index) => (
+                  <li key={index}>{name}</li>
+                ))}
+              </ul>
+              <button
+                type="button"
+                onClick={() => setShowModal(false)} // Închide modalul
+                className="cancel-button"
+              >
+                Închide
+              </button>
+            </div>
           </div>
-        </div>
-      )}
+        )}
       </div>
     </div>
   );

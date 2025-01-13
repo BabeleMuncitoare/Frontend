@@ -111,7 +111,7 @@ body {
 .content {
   margin-left: 110px;
   flex: 1;
-  padding-top: 60px;
+  padding-top: 30px;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -132,19 +132,26 @@ body {
   color: rgba(255, 255, 255, 0.8);
 }
 
+/* Setează o înălțime maximă și permite derularea verticală */
+.announcements-container {
+  max-height: 300px;  /* Poți ajusta această valoare în funcție de nevoile tale */
+  overflow-y: auto;
+  width: 80%;          /* Setează o lățime pentru container (opțional) */
+  border-radius: 10px; /* Colțuri rotunjite */
+ 
+}
 /* Secțiunea de anunțuri */
 .announcements {
   display: flex;
   flex-direction: column;
-  padding-top: 80px;
   gap: 20px;
-  width: 75%;
+  width: 100%;
   align-self: center;
 }
 
 .announcement {
   background-color: var(--secondary-color);
-  padding: 15px 20px;
+  padding: 15px 0px;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   text-align: center;
@@ -152,7 +159,16 @@ body {
   font-weight: bold;
   color: var(--text-color);
 }
+.announcement h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #ffffff;
+}
 
+.announcement p {
+  margin: 0px 0 0;
+  color: #ffffff;
+}
 /* Secțiunea de link-uri utile */
 .useful-links {
   background-color: var(--secondary-color);
@@ -312,3 +328,4 @@ body {
     @apply bg-background text-foreground; 
   } 
 }
+
