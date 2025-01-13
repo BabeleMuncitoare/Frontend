@@ -2,138 +2,146 @@
     max-width: 800px;
     margin: auto;
     padding: 20px;
-  }
-  
-  .announcement {
+}
+
+.announcement {
     text-align: center;
-    color: #333;
+    color: white;
     margin-bottom: 20px;
-  }
-  
-  .add-announcement,
-  .edit-announcement {
+    font-size: x-large;
+
+}
+
+.add-announcement,
+.edit-announcement {
     margin: 20px 0;
     padding: 15px;
     background-color: #f9f9f9;
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  input,
-  textarea {
+}
+
+input,
+textarea {
     width: 100%;
     margin: 10px 0;
     padding: 8px;
     border-radius: 5px;
     border: 1px solid #ccc;
     color: black;
-  }
-  
-  button {
+}
+
+button {
     padding: 8px 12px;
     margin-right: 10px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-  }
-  
-  .add-btn {
+}
+
+.add-btn {
     background-color: #007bff;
     color: white;
-  }
-  
-  .add-btn:hover {
+}
+
+.add-btn:hover {
     background-color: #0056b3;
-  }
-  
-  .edit-btn {
+}
+
+.edit-btn {
     background-color: #ffc107;
     color: white;
-  }
-  
-  .edit-btn:hover {
+}
+
+.edit-btn:hover {
     background-color: #e0a800;
-  }
-  
-  .delete-btn {
+}
+
+.delete-btn {
     background-color: #ff4d4d;
     color: white;
-  }
-  
-  .delete-btn:hover {
+}
+
+.delete-btn:hover {
     background-color: #e60000;
-  }
-  
-  .update-btn {
+}
+
+.update-btn {
     background-color: #28a745;
     color: white;
-  }
-  
-  .update-btn:hover {
+}
+
+.update-btn:hover {
     background-color: #218838;
-  }
-  
-  .cancel-btn {
+}
+
+.cancel-btn {
     background-color: #6c757d;
     color: white;
-  }
-  
-  .cancel-btn:hover {
+}
+
+.cancel-btn:hover {
     background-color: #5a6268;
-  }
-  
-  ul {
+}
+
+ul {
     list-style: none;
     padding: 0;
     margin: 0;
-  }
-  
-  ul li {
-    background: #ffffff; /* Fundal alb pentru contrast */
+}
+
+ul li {
+    background: #ffffff;
+    /* Fundal alb pentru contrast */
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow pentru un efect de card */
-    margin-bottom: 20px; /* Distanță între anunțuri */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* Shadow pentru un efect de card */
+    margin-bottom: 20px;
+    /* Distanță între anunțuri */
     padding: 20px;
-    color: #333; /* Culoare text */
-  }
-  
-  ul li h3 {
+    color: #333;
+    /* Culoare text */
+}
+
+ul li h3 {
     font-size: 1.5rem;
     margin-bottom: 10px;
-    color: #007bff; /* Albastru pentru titlu */
-  }
-  
-  ul li p {
+    color: #007bff;
+    /* Albastru pentru titlu */
+}
+
+ul li p {
     font-size: 1rem;
     line-height: 1.5;
     margin-bottom: 15px;
-  }
-  
-  ul li button {
+}
+
+ul li button {
     padding: 10px 15px;
     margin-right: 10px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-  }
-  
-  ul li .edit-btn {
-    background-color: #ffc107; /* Galben pentru editare */
+}
+
+ul li .edit-btn {
+    background-color: #ffc107;
+    /* Galben pentru editare */
     color: #fff;
-  }
-  
-  ul li .edit-btn:hover {
+}
+
+ul li .edit-btn:hover {
     background-color: #e0a800;
-  }
-  
-  ul li .delete-btn {
-    background-color: #ff4d4d; /* Roșu pentru ștergere */
+}
+
+ul li .delete-btn {
+    background-color: #ff4d4d;
+    /* Roșu pentru ștergere */
     color: #fff;
-  }
-  
-  ul li .delete-btn:hover {
+}
+
+ul li .delete-btn:hover {
     background-color: #e60000;
-  }
-  
+}
