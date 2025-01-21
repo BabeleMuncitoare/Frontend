@@ -1,10 +1,10 @@
-ul {
+.class-management ul {
   list-style: none;
   padding-left: 5vw;
   padding-right: 5vw;
 }
 
-ul li {
+.class-management ul li {
   background: #f4f4f4;
   margin: 10px 0;
   padding: 10px;
@@ -13,12 +13,12 @@ ul li {
   color: black;
 }
 
-h2 {
+.class-management h2 {
   margin-bottom: 10px;
   color: #333;
 }
 
-h3 {
+.class-management h3 {
   margin: 15px 0 5px;
   color: #555;
 }
@@ -29,4 +29,184 @@ h3 {
   text-align: center;
   font-size: x-large;
   color: white;
+}
+
+.class-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.button-add {
+  padding: 15px;
+  margin-left: 5vw;
+  margin-bottom: 10px;
+}
+
+.button-delete {
+  background-color: #ff4d4f;
+  /* Roșu pentru ștergere */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 50vw;
+  /* Lățime fixă */
+  max-height: 80vh;
+  /* Înălțime maximă pentru a preveni depășirea */
+  overflow-y: auto;
+  /* Scroll pentru conținut care depășește */
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+input {
+  background-color: whitesmoke;
+}
+
+.label-class {
+  color: black;
+}
+
+.modal-content h3 {
+  margin-bottom: 20px;
+  color: black;
+}
+
+.modal-content h4 {
+  text-align: left;
+  /* Aliniază titlurile pentru secțiunile listei */
+  margin-bottom: 10px;
+  color: black;
+}
+
+.modal-content input {
+  color: black;
+}
+
+.modal-content .list-container {
+  display: flex;
+  justify-content: space-between;
+  /* Aliniază listele una lângă alta */
+  gap: 20px;
+  /* Spațiu mai mare între liste */
+}
+
+.list-container ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 20vw;
+  /* Lărgire tabele pentru a ocupa mai mult spațiu */
+  max-height: 400px;
+  /* Înălțime mai mare pentru a afișa mai multe elemente */
+  overflow-y: auto;
+  /* Scroll vertical pentru liste */
+  border: 1px solid #ddd;
+  /* Adaugă o margine ușoară */
+  border-radius: 5px;
+  background: #f9f9f9;
+}
+
+.list-container ul li {
+  padding: 10px;
+  margin: 5px 0;
+  background: #f4f4f4;
+  border-radius: 5px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  font-size: 16px;
+  /* Font mai mare pentru lizibilitate */
+}
+
+
+.modal-content ul li {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  /* Asigură alinierea la stânga */
+  margin-bottom: 10px;
+  /* Spațiu între rânduri */
+}
+
+.modal-content ul li button {
+  margin-right: 10px;
+  /* Spațiu între buton și numele profesorului */
+  align-self: flex-start;
+  /* Asigură alinierea butonului la început */
+}
+
+.modal button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.button-add {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  align-self: start;
+}
+
+.modal button:hover {
+  background-color: #0056b3;
+}
+
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #ff4d4f;
+  /* Roșu pentru butonul de închidere */
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+}
+
+.modal-close:hover {
+  background-color: #d9363e;
+  /* Culoare mai închisă la hover */
+}
+
+.modal button {
+  margin-top: 15px;
 }

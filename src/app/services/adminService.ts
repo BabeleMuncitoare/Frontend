@@ -1,14 +1,6 @@
 const API_URL = "https://bigbaba.yirade.dev/api/admin";
 
-export interface Exam {
-    id: number;
-    subject: string;
-    date: string;
-    location: string;
-    accepted: boolean | null;
-    rejected: boolean | null;
-    class_assigned: number;
-}
+import {Exam, Professor} from '@/app/services/interfaces';
 
 function getCookie(name: string): string | null {
     const value = `; ${document.cookie}`;
@@ -171,6 +163,31 @@ export async function fetchProfessorsByIds(professorIds: unknown[]): Promise<any
     return await response.json();
   }
 
+  export async function fetchStudentsByIds(studentIds: number[]): Promise<{ id: number; user_name: string; group: string; year_of_study: number }[]> {
+    // Filtrăm pentru a ne asigura că toate ID-urile sunt de tipul number
+    const validStudentIds = studentIds.filter((id): id is number => typeof id === 'number');
+  
+    // Construim query-ul pentru ID-urile studenților
+    const idsParam = validStudentIds.join(','); // Formatează ID-urile într-un string de tipul "1,2,3"
+  
+    const token = getCookie('accessToken');
+    const response = await fetch(`${API_URL}/students/?ids=${idsParam}`, {
+        method: 'GET',
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+  
+    if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Error response data:', errorData);
+        throw new Error(errorData.error || 'Eroare la obținerea studenților.');
+    }
+  
+    return await response.json();
+}
+
+
 export async function updateExam(id: number, updatedData: Partial<Exam>) {
     const token = getCookie('accessToken');
     const response = await fetch(`${API_URL}/exams/${id}/`, {
@@ -188,3 +205,54 @@ export async function updateExam(id: number, updatedData: Partial<Exam>) {
 
     return await response.json();
 }
+
+export async function fetchAllProfessors(): Promise<Professor[]> {
+    const token = getCookie('accessToken');
+    const response = await fetch(`${API_URL}/professors/`, {
+        method: 'GET',
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
+    if (!response.ok) {
+        throw new Error('Failed to fetch professors from backend.');
+    }
+
+    return await response.json();
+}
+
+export async function createClass(data: { name: string; professors: number[]; students: number[] }) {
+    const token = getCookie('accessToken'); // Asigură-te că ai funcția `getCookie` implementată
+  
+    const response = await fetch(`${API_URL}/classes/`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+  
+    if (!response.ok) {
+      throw new Error('Failed to create class.');
+    }
+  
+    return await response.json();
+  }
+
+  export async function deleteClass(classId: number): Promise<void> {
+    const token = getCookie('accessToken');
+  
+    const response = await fetch(`${API_URL}/classes/${classId}/`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  
+    if (!response.ok) {
+      throw new Error('Failed to delete class.');
+    }
+  }
+  

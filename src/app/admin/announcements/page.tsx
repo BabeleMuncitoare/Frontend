@@ -8,12 +8,7 @@ import {
   updateAnnouncement,
 } from '@/app/services/adminService';
 import './announcements.css';
-
-interface Announcement {
-  id: number;
-  title: string;
-  content: string;
-}
+import {Announcement} from '@/app/services/interfaces';
 
 export default function Announcements() {
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
