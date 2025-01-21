@@ -3,7 +3,13 @@
 import React, { useEffect, useState } from 'react';
 import { fetchAdminUsers } from '@/app/services/adminService';
 import './user.css';
-import {User} from '@/app/services/interfaces';
+
+interface User {
+  id: number;
+  username: string;
+  email: string;
+  user_type: string; // Tipul utilizatorului: "student", "professor", "admin"
+}
 
 export default function Users() {
   const [users, setUsers] = useState<User[]>([]); // Lista completă de utilizatori
@@ -64,7 +70,7 @@ export default function Users() {
       {/* Lista utilizatorilor */}
       <ul>
         {filteredUsers.map((user) => (
-          <li key={user.id} className={`user-item user-${user.user_type}`}>
+          <li key={user.id}>
             {user.username} ({user.email}) - {user.user_type}
           </li>
         ))}

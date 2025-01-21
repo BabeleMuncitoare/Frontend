@@ -6,7 +6,21 @@ import './exams.css';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import { DayPicker } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
-import {Exam, Class} from '@/app/services/interfaces';
+
+interface Exam {
+  id: number;
+  subject: string;
+  date: string;
+  location: string;
+  accepted: boolean | null;
+  rejected: boolean | null;
+  class_assigned: number;
+}
+
+interface Class {
+  id: number;
+  name: string;
+}
 
 export default function Exams() {
   const [exams, setExams] = useState<Exam[]>([]);
@@ -99,7 +113,7 @@ export default function Exams() {
     if (editingExam && editMode) {
       try {
         let updatedExam = { ...editingExam };
-
+  
         if (editMode === 'date') {
           if (formData.date && formData.time) {
             updatedExam.date = `${formatDateToDatabase(formData.date)}T${formData.time}:00Z`;
@@ -110,14 +124,14 @@ export default function Exams() {
         } else if (editMode === 'location') {
           updatedExam.location = formData.location;
         }
-
+  
         // Trimite cererea către server
         const updatedExamFromServer = await updateExam(editingExam.id, updatedExam);
         console.log('Updated exam:', updatedExamFromServer);
-
+  
         // Actualizează lista locală
         updateExamList(updatedExamFromServer);
-
+  
         // Resetează stările
         setEditingExam(null);
         setEditMode(null);
@@ -127,7 +141,7 @@ export default function Exams() {
       }
     }
   };
-
+  
 
   const updateExamList = (updatedExam: Exam) => {
     setExams((prev) =>
@@ -234,7 +248,12 @@ export default function Exams() {
         {filteredExams.map((exam) => (
           <li
             key={exam.id}
-            className={`exam-item ${exam.accepted ? 'accepted' : exam.rejected ? 'rejected' : 'pending'} exam-specific`}
+            className={`exam-item ${exam.accepted
+                ? 'accepted'
+                : exam.rejected
+                  ? 'rejected'
+                  : 'pending'
+              }`}
           >
             <h3>{exam.subject}</h3>
             <p>

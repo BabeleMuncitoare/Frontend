@@ -39,39 +39,35 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
-  
+
     const { username, password } = formData;
-  
+
     if (!username || !password) {
       setError('Toate câmpurile sunt obligatorii.');
       return;
     }
-  
+
     try {
+      // Trimite cererea de autentificare la backend
       const response = await login(username, password);
-      
+
+      // Extrage user_type din răspuns
       const { refresh, access, user } = response;
-  
+      console.log('Răspunsul backend-ului:', response);
+
       if (!refresh || !access || !user || !user.user_type) {
         throw new Error('Răspunsul backend-ului este invalid.');
       }
-  
-      // Salvează informațiile în cookies
+
+      // Salvează rolul utilizatorului în cookies
       setCookie('refreshToken', refresh, 7);
       setCookie('accessToken', access, 1);
       setCookie('userId', user.id.toString(), 7);
       setCookie('userEmail', user.email, 7);
       setCookie('userType', user.user_type, 7);
       setCookie('username', user.username, 7);
-  
-      // Adaugă student_id sau professor_id în cookie, dacă există
-      if (user.user_type === 'student' && user.student_id) {
-        setCookie('studentId', user.student_id.toString(), 7);
-      } else if (user.user_type === 'professor' && user.professor_id) {
-        setCookie('professorId', user.professor_id.toString(), 7);
-      }
-  
-      // Redirecționare în funcție de rol
+
+      // Redirecționează în funcție de user_type
       if (user.user_type === 'student') {
         router.replace('/dashboardstudent');
       } else if (user.user_type === 'professor') {
@@ -82,6 +78,7 @@ export default function LoginPage() {
         setError(`Rol necunoscut: ${user.user_type}`);
       }
     } catch (err: any) {
+      // Loghează eroarea pentru debugging
       console.error('Eroare la autentificare:', err);
       setError(DOMPurify.sanitize(err.message) || 'Eroare la conectarea cu serverul.');
     }

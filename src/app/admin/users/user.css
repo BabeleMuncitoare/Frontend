@@ -17,13 +17,13 @@
   border-color: #007bff;
 }
 
-.user-management ul {
+ul {
   list-style: none;
   padding-left: 5vw;
   padding-right: 5vw;
 }
 
-.user-management ul li {
+ul li {
   background: #f4f4f4;
   margin: 5px 0;
   padding: 10px;
