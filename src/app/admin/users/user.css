@@ -17,13 +17,13 @@
   border-color: #007bff;
 }
 
-ul {
+.user-management ul {
   list-style: none;
   padding-left: 5vw;
   padding-right: 5vw;
 }
 
-ul li {
+.user-management ul li {
   background: #f4f4f4;
   margin: 5px 0;
   padding: 10px;
@@ -40,5 +40,3 @@ ul li {
     font-size: x-large;
     color: white;
 }
-
-  

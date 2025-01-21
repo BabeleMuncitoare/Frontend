@@ -11,17 +11,7 @@ import "react-day-picker/dist/style.css";
 
 import { fetchUserExams, scheduleExam } from "@/app/services/examsService";
 import { fetchClasses } from "@/app/services/classesService";
-
-interface Exam {
-  id: number;
-  subject: string;
-  date: string;
-  location: string;
-  class_assigned: number;
-  created_by: number;
-  accepted: boolean;
-  rejected: boolean;
-}
+import { Exam} from "@/app/services/interfaces";
 
 const CalendarStudentPage = () => {
   const router = useRouter();
@@ -31,6 +21,7 @@ const CalendarStudentPage = () => {
   const [exams, setExams] = useState<Exam[]>([]);
   const [classes, setClasses] = useState<{ id: number; name: string }[]>([]);
   const [showModal, setShowModal] = useState(false);
+  const [studentId, setStudentId] = useState<string | null>(null)
   const [formData, setFormData] = useState({
     subject: "",
     date: undefined as Date | undefined,
@@ -58,39 +49,80 @@ const CalendarStudentPage = () => {
     }
   };
 
+
+  const getCookie = (name: string): string | null => {
+    // Preia toate cookie-urile
+    const cookies = document.cookie;
+    console.log("Document Cookies:", cookies); // Debugging - afișează toate cookie-urile
+  
+    // Construiește expresia regulată pentru a căuta numele cookie-ului
+    const match = cookies.match(new RegExp(`(^|;)\\s*${name}=([^;]*)`));
+    
+    // Dacă găsește cookie-ul, îl returnează decodat
+    if (match) {
+      const value = decodeURIComponent(match[2]);
+      console.log(`Cookie Found - ${name}:`, value); // Debugging - afișează valoarea cookie-ului găsit
+      return value;
+    }
+  
+    // Dacă nu găsește cookie-ul, returnează null
+    console.warn(`Cookie Not Found - ${name}`); // Debugging - avertizează dacă nu găsește cookie-ul
+    return null;
+  };
+
+
+
   useEffect(() => {
-    const loadExams = async () => {
-      try {
-        const examsData = await fetchUserExams();
-  
-        // Filtrăm examenele respinse
-        const acceptedExams = examsData.filter((exam: Exam) => !exam.rejected);
-  
-        // Setăm examenele acceptate în starea locală
-        setExams(acceptedExams);
-  
-        // Extragem datele pentru examenele acceptate
-        const dates = acceptedExams.map((exam: Exam) => new Date(exam.date));
-  
-        // Setăm doar datele care au examene programate
-        setHighlightedDates(dates);
-      } catch (error) {
-        console.error("Error fetching exams:", error);
-      }
-    };
-  
-    const loadClasses = async () => {
-      try {
-        const classesData = await fetchClasses();
-        setClasses(classesData);
-      } catch (error) {
-        console.error("Error fetching classes:", error);
-      }
-    };
-  
-    loadExams();
-    loadClasses();
+    // Setăm ID-ul studentului din cookie
+    const id = getCookie("studentId");
+    if (id) {
+      setStudentId(id);
+    } else {
+      console.error("Student ID not found in cookies");
+    }
   }, []);
+
+  useEffect(() => {
+    if (!studentId) return;
+
+    // Încărcăm datele examenelor și ale claselor
+    const loadExamsAndClasses = async () => {
+      try {
+        // Obținem datele examenelor și ale claselor
+        const examsData = await fetchUserExams();
+        const classesData = await fetchClasses();
+
+        console.log('Exams Data:', examsData); // Verifică datele examenelor
+        console.log('Classes Data:', classesData); // Verifică datele claselor
+
+        // Găsim grupa studentului pe baza ID-ului studentului
+        const studentClass = classesData.find((cls) =>
+          cls.students.includes(Number(studentId)) // Verificăm dacă studentul face parte din această clasă
+        );
+
+        // Dacă studentul face parte dintr-o grupă validă, filtrăm examenele
+        if (studentClass) {
+          const studentExams = examsData.filter(
+            (exam: Exam) => exam.class_assigned === studentClass.id
+          );
+          setExams(studentExams);
+
+          // Setăm datele examenelor pentru a le evidenția pe calendar
+          const dates = studentExams.map((exam:Exam) => new Date(exam.date));
+          setHighlightedDates(dates);
+        } else {
+          console.warn("Studentul nu face parte din nicio grupă validă.");
+        }
+
+        setClasses(classesData); // Setăm datele claselor
+      } catch (error) {
+        console.error("Error fetching exams or classes:", error);
+      }
+    };
+
+    loadExamsAndClasses();
+  }, [studentId]); // Refacem încărcarea datelor dacă `studentId` se schimbă
+  
   
   const isDateHighlighted = (date: Date): boolean => {
     return highlightedDates.some(

@@ -85,13 +85,13 @@ button {
     background-color: #5a6268;
 }
 
-ul {
+.announce-management ul {
     list-style: none;
     padding: 0;
     margin: 0;
 }
 
-ul li {
+.announce-management ul li {
     background: #ffffff;
     /* Fundal alb pentru contrast */
     border-radius: 10px;
@@ -104,20 +104,20 @@ ul li {
     /* Culoare text */
 }
 
-ul li h3 {
+.announce-management ul li h3 {
     font-size: 1.5rem;
     margin-bottom: 10px;
     color: #007bff;
     /* Albastru pentru titlu */
 }
 
-ul li p {
+.announce-management ul li p {
     font-size: 1rem;
     line-height: 1.5;
     margin-bottom: 15px;
 }
 
-ul li button {
+.announce-management ul li button {
     padding: 10px 15px;
     margin-right: 10px;
     border: none;
@@ -126,22 +126,22 @@ ul li button {
     transition: background-color 0.3s ease;
 }
 
-ul li .edit-btn {
+.announce-management ul li .edit-btn {
     background-color: #ffc107;
     /* Galben pentru editare */
     color: #fff;
 }
 
-ul li .edit-btn:hover {
+.announce-management ul li .edit-btn:hover {
     background-color: #e0a800;
 }
 
-ul li .delete-btn {
+.announce-management ul li .delete-btn {
     background-color: #ff4d4d;
     /* Roșu pentru ștergere */
     color: #fff;
 }
 
-ul li .delete-btn:hover {
+.announce-management ul li .delete-btn:hover {
     background-color: #e60000;
 }
