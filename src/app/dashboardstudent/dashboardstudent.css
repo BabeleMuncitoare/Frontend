@@ -50,3 +50,15 @@
   opacity: 1;
   visibility: visible;
 }
+
+.content-student {
+  margin-left: 110px;
+  flex: 1;
+  padding-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: calc(100vw - 110px);
+  align-self: center;
+  align-items: center;
+}

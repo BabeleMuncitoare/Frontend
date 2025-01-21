@@ -116,6 +116,7 @@ body {
   flex-direction: column;
   gap: 20px;
   width: calc(100vw - 110px);
+
 }
 
 .main-header {

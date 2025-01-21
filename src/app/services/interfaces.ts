@@ -46,3 +46,11 @@ export interface ClassCreateData {
     professors: number[];
     students: number[];
 }
+
+export interface Announcement {
+    id: number;
+    title: string;
+    content: string;
+    created_at: string;
+    updated_at: string;
+  }

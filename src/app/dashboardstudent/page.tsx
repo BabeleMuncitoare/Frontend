@@ -1,12 +1,15 @@
 'use client';
 
+const API_URL = "https://bigbaba.yirade.dev/api";
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import './dashboardstudent.css';
+import { Announcement } from '@/app/services/interfaces';
+
 
 const getCookie = (name: string): string | null => {
   const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`); 
+  const parts = value.split(`; ${name}=`);
   if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
   return null;
 };
@@ -15,6 +18,7 @@ const DashboardStudent = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
+  const [announcements, setAnnouncements] = useState<Announcement[]>([]); // Starea pentru anunțuri
 
   const handleLogout = () => {
     document.cookie = 'accessToken=; Max-Age=0; path=/;';
@@ -41,6 +45,21 @@ const DashboardStudent = () => {
 
     checkAuthStatus();
 
+    const fetchAnnouncements = async () => {
+      try {
+        const response = await fetch(`${API_URL}/announcements/`);
+        if (response.ok) {
+          const data: Announcement[] = await response.json();
+          setAnnouncements(data); // Setează anunțurile în stare
+        } else {
+          console.error('Error fetching announcements:', response.status);
+        }
+      } catch (error) {
+        console.error('Error fetching announcements:', error);
+      }
+    };
+
+    fetchAnnouncements();
     // Prevent back navigation
     const addDummyHistory = () => {
       window.history.pushState(null, '', window.location.href);
@@ -95,11 +114,21 @@ const DashboardStudent = () => {
         </div>
       </div>
 
-      <div className="content">
-        <div className="announcements">
-          <div className="announcement">Anunț 1 - Verifică programările.</div>
-          <div className="announcement">Anunț 2 - Actualizări în orar.</div>
-          <div className="announcement">Anunț 3 - Modificări administrative.</div>
+      <div className='content-student'>
+        <div className="announcements-container">
+          <div className="announcements">
+            {announcements.length > 0 ? (
+              announcements.map((announcement, index) => (
+                <div key={index} className="announcement">
+                  {/* Afișează titlul și conținutul anunțului */}
+                  <h3>{announcement.title}</h3>
+                  <p>{announcement.content}</p>
+                </div>
+              ))
+            ) : (
+              <div className="announcement">Nu există anunțuri disponibile.</div>
+            )}
+          </div>
         </div>
       </div>
     </div>

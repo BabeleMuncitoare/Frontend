@@ -3,14 +3,7 @@ const API_URL = "https://bigbaba.yirade.dev/api";
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import './globals.css';
-
-interface Announcement {
-  id: number;
-  title: string;
-  content: string;
-  created_at: string;
-  updated_at: string;
-}
+import { Announcement } from './services/interfaces';
 
 const HomePage = () => {
   const router = useRouter();
@@ -101,7 +94,6 @@ const HomePage = () => {
               )}
             </div>
           </div>
-
         </div>
         {/* Useful Links Section */}
         <div className="useful-links">
